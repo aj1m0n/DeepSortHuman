@@ -38,13 +38,16 @@ def main(yolo):
     tracking = True
     writeVideo_flag = True
     asyncVideo_flag = False
+    webcamera_flag = False
 
     file_path = './data/C0133.MP4'
     if asyncVideo_flag :
         video_capture = VideoCaptureAsync(file_path)
+    else if webcamera_flag:
+        video_capture = cv2.VideoCapture(0)
     else:
         video_capture = cv2.VideoCapture(file_path)
-
+        
     if asyncVideo_flag:
         video_capture.start()
 
