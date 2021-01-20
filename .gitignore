@@ -3,3 +3,5 @@
 tensorflow1.14/.python-version
 tensorflow2.0/deep-sort-yolov4/__pycache__/videocaptureasync.cpython-36.pyc
 __pycache__/
+data/
+tensorflow2.0/deep-sort-yolov4/output_yolov4.avi
