@@ -40,11 +40,9 @@ def main(yolo):
     asyncVideo_flag = False
     webcamera_flag = False
 
-    file_path = './data/C0133.MP4'
+    file_path = 'video.webm'
     if asyncVideo_flag :
         video_capture = VideoCaptureAsync(file_path)
-    else if webcamera_flag:
-        video_capture = cv2.VideoCapture(0)
     else:
         video_capture = cv2.VideoCapture(file_path)
         
