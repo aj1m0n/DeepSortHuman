@@ -36,7 +36,7 @@ def main(yolo):
     tracker = Tracker(metric)
 
     tracking = True
-    writeVideo_flag = True
+    writeVideo_flag = False
     asyncVideo_flag = False
     webcamera_flag = False
 
@@ -56,8 +56,8 @@ def main(yolo):
         else:
             w = int(video_capture.get(3))
             h = int(video_capture.get(4))
-        fourcc = cv2.VideoWriter_fourcc(*'XVID')
-        out = cv2.VideoWriter('output_yolov4.avi', fourcc, 30, (w, h))
+#        fourcc = cv2.VideoWriter_fourcc(*'XVID')
+#        out = cv2.VideoWriter('output_yolov4.avi', fourcc, 30, (w, h))
         frame_index = -1
 
     fps = 0.0
@@ -110,7 +110,7 @@ def main(yolo):
                 cv2.putText(frame, str(cls) + " " + score, (int(bbox[0]), int(bbox[3])), 0,
                             1.5e-3 * frame.shape[0], (0, 255, 0), 1)
 
-        cv2.imshow('', frame)
+        #cv2.imshow('', frame)
 
         if writeVideo_flag: # and not asyncVideo_flag:
             # save a frame
