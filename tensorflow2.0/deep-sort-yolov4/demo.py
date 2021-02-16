@@ -103,7 +103,7 @@ def main(yolo):
                 cv2.rectangle(frame, (int(bbox[0]), int(bbox[1])), (int(bbox[2]), int(bbox[3])), (255, 255, 255), 2)
                 cv2.putText(frame, "ID: " + str(track.track_id), (int(bbox[0]), int(bbox[1])), 0,
                             1.5e-3 * frame.shape[0], (0, 255, 0), 1)
-                print("F: " + str(frame) + ", ID: " + str(track.track_id) + ", x: " + str(int(bbox[0])) + ", y: " + str(int(bbox[1])))
+                print("ID: " + str(track.track_id) + ", x: [" + str(int(bbox[0])) + "," + str(int(bbox[1])) + "], y: [" + str(int(bbox[2])) + "," + str(int(bbox[3])) + "]")
 
         for det in detections:
             bbox = det.to_tlbr()
