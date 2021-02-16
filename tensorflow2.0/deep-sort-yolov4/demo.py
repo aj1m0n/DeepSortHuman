@@ -39,12 +39,13 @@ def main(yolo):
     writeVideo_flag = False
     asyncVideo_flag = False
     webcamera_flag = False
+    ipcamera_flag = False
 
     file_path = '/workspace/data/C0133_v4.mp4'
     if asyncVideo_flag :
         video_capture = VideoCaptureAsync(file_path)
-    elif:
-        video_capture = cv2.VideoCapture()
+    eli ipcamera_flag:
+        video_capture = cv2.VideoCapture('rtsp://camera:Camera123@192.168.2.201/ONVIF/MediaInput?profile=def_profile1')
     else:
         video_capture = cv2.VideoCapture(file_path)
         
