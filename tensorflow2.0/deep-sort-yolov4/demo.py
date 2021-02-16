@@ -19,6 +19,8 @@ from tools import generate_detections as gdet
 import imutils.video
 from videocaptureasync import VideoCaptureAsync
 
+import datetime
+
 warnings.filterwarnings('ignore')
 
 def main(yolo):
@@ -46,6 +48,8 @@ def main(yolo):
         video_capture = VideoCaptureAsync(file_path)
     elif ipcamera_flag :
         video_capture = cv2.VideoCapture('rtsp://camera:Camera123@192.168.2.201/ONVIF/MediaInput?profile=def_profile1')
+    elif webcamera_flag :
+        video_capture = cv2.VideoCapture(0)
     else:
         video_capture = cv2.VideoCapture(file_path)
         
@@ -103,7 +107,7 @@ def main(yolo):
                 cv2.rectangle(frame, (int(bbox[0]), int(bbox[1])), (int(bbox[2]), int(bbox[3])), (255, 255, 255), 2)
                 cv2.putText(frame, "ID: " + str(track.track_id), (int(bbox[0]), int(bbox[1])), 0,
                             1.5e-3 * frame.shape[0], (0, 255, 0), 1)
-                print("ID: " + str(track.track_id) + ", x: [" + str(int(bbox[0])) + "," + str(int(bbox[1])) + "], y: [" + str(int(bbox[2])) + "," + str(int(bbox[3])) + "]")
+                print("time: " + datetime.datetime.now().isoformat() + ", ID: " + str(track.track_id) + ", x: [" + str(int(bbox[0])) + "," + str(int(bbox[1])) + "], y: [" + str(int(bbox[2])) + "," + str(int(bbox[3])) + "]")
 
         for det in detections:
             bbox = det.to_tlbr()
