@@ -40,9 +40,11 @@ def main(yolo):
     asyncVideo_flag = False
     webcamera_flag = False
 
-    file_path = 'video.webm'
+    file_path = '/workspace/data/C0133_v4.mp4'
     if asyncVideo_flag :
         video_capture = VideoCaptureAsync(file_path)
+    elif:
+        video_capture = cv2.VideoCapture()
     else:
         video_capture = cv2.VideoCapture(file_path)
         
@@ -100,6 +102,7 @@ def main(yolo):
                 cv2.rectangle(frame, (int(bbox[0]), int(bbox[1])), (int(bbox[2]), int(bbox[3])), (255, 255, 255), 2)
                 cv2.putText(frame, "ID: " + str(track.track_id), (int(bbox[0]), int(bbox[1])), 0,
                             1.5e-3 * frame.shape[0], (0, 255, 0), 1)
+                print("F: " + srt(frame) + ", ID: " + str(track.track_id) + ", x: " + str(int(bbox[0])) + ", y: " + str(int(bbox[1])))
 
         for det in detections:
             bbox = det.to_tlbr()
