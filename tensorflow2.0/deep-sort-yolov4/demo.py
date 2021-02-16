@@ -40,7 +40,7 @@ def main(yolo):
     tracking = True
     writeVideo_flag = False
     asyncVideo_flag = False
-    webcamera_flag = False
+    webcamera_flag = True
     ipcamera_flag = False
 
     file_path = '/workspace/data/C0133_v4.mp4'
@@ -71,6 +71,7 @@ def main(yolo):
     fps_imutils = imutils.video.FPS().start()
 
     while True:
+        nowtime = datetime.datetime.now().isoformat()
         ret, frame = video_capture.read()  # frame shape 640*480*3
         if ret != True:
              break
@@ -107,7 +108,7 @@ def main(yolo):
                 cv2.rectangle(frame, (int(bbox[0]), int(bbox[1])), (int(bbox[2]), int(bbox[3])), (255, 255, 255), 2)
                 cv2.putText(frame, "ID: " + str(track.track_id), (int(bbox[0]), int(bbox[1])), 0,
                             1.5e-3 * frame.shape[0], (0, 255, 0), 1)
-                print("time: " + datetime.datetime.now().isoformat() + ", ID: " + str(track.track_id) + ", x: [" + str(int(bbox[0])) + "," + str(int(bbox[1])) + "], y: [" + str(int(bbox[2])) + "," + str(int(bbox[3])) + "]")
+                print("time: " + nowtime + ", ID: " + str(track.track_id) + ", x: [" + str(int(bbox[0])) + "," + str(int(bbox[1])) + "], y: [" + str(int(bbox[2])) + "," + str(int(bbox[3])) + "]")
 
         for det in detections:
             bbox = det.to_tlbr()
