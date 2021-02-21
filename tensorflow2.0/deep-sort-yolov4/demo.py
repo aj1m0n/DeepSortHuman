@@ -21,6 +21,8 @@ from videocaptureasync import VideoCaptureAsync
 
 import datetime
 
+from socket import *
+
 warnings.filterwarnings('ignore')
 
 def main(yolo):
@@ -42,6 +44,7 @@ def main(yolo):
     asyncVideo_flag = False
     webcamera_flag = True
     ipcamera_flag = False
+    udp_flag = True
 
     file_path = '/workspace/data/C0133_v4.mp4'
     if asyncVideo_flag :
@@ -66,6 +69,15 @@ def main(yolo):
         fourcc = cv2.VideoWriter_fourcc(*'XVID')
         out = cv2.VideoWriter('output_yolov4.avi', fourcc, 30, (w, h))
         frame_index = -1
+
+    if udp_flag:
+        HOST = ''
+        PORT = 5000
+        address = '192.168.2.255'
+        sock =socket(AF_INET, SOCK_DGRAM)
+        sock.setsockopt(SOL_SOCKET, SO_BROADCAST, 1)
+        sock.bind((HOST, PORT))
+
 
     fps = 0.0
     fps_imutils = imutils.video.FPS().start()
@@ -108,7 +120,13 @@ def main(yolo):
                 cv2.rectangle(frame, (int(bbox[0]), int(bbox[1])), (int(bbox[2]), int(bbox[3])), (255, 255, 255), 2)
                 cv2.putText(frame, "ID: " + str(track.track_id), (int(bbox[0]), int(bbox[1])), 0,
                             1.5e-3 * frame.shape[0], (0, 255, 0), 1)
-                print("time: " + nowtime + ", ID: " + str(track.track_id) + ", x: [" + str(int(bbox[0])) + "," + str(int(bbox[1])) + "], y: [" + str(int(bbox[2])) + "," + str(int(bbox[3])) + "]")
+                # socket
+                message = str(nowtime + "," + str(track.track_id) + "," + str(int(bbox[0])) + "," + str(int(bbox[1])) + "," + str(int(bbox[2])) + "," + str(int(bbox[3])))
+                bmessage = message.encode('utf-8')
+                print(type(bmessage))
+                if udp_flag:
+                    sock.sendto(message.encode('utf-8'), (address, PORT))
+
 
         for det in detections:
             bbox = det.to_tlbr()
