@@ -81,6 +81,8 @@ def main(yolo):
 
     fps = 0.0
     fps_imutils = imutils.video.FPS().start()
+    
+    savetime = 0
 
     while True:
         nowtime = datetime.datetime.now().isoformat()
@@ -90,6 +92,10 @@ def main(yolo):
 
         t1 = time.time()
 
+        if time.time() - savetime >= 30: 
+            print('save data') 
+            cv2.imwrite("/workspace/images/image.png", frame)
+            savetime = time.time()
         image = Image.fromarray(frame[...,::-1])  # bgr to rgb
         boxes, confidence, classes = yolo.detect_image(image)
 
