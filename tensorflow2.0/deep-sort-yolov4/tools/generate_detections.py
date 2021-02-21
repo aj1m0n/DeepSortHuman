@@ -176,6 +176,10 @@ def generate_detections(encoder, mot_dir, output_dir, detection_dir=None):
             features = encoder(bgr_image, rows[:, 2:6].copy())
             detections_out += [np.r_[(row, feature)] for row, feature
                                in zip(rows, features)]
+            print(frame_idx)
+            if frame_idx % 100  == 0:
+                print('save image')
+                cv2.imwrite('/workspace/images/image.jpg', bgr_image)
 
         output_filename = os.path.join(output_dir, "%s.npy" % sequence)
         np.save(

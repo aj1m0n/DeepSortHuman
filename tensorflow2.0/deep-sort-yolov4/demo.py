@@ -19,6 +19,10 @@ from tools import generate_detections as gdet
 import imutils.video
 from videocaptureasync import VideoCaptureAsync
 
+import datetime
+
+from socket import *
+
 warnings.filterwarnings('ignore')
 
 def main(yolo):
@@ -36,13 +40,19 @@ def main(yolo):
     tracker = Tracker(metric)
 
     tracking = True
-    writeVideo_flag = True
+    writeVideo_flag = False
     asyncVideo_flag = False
-    webcamera_flag = False
+    webcamera_flag = True
+    ipcamera_flag = False
+    udp_flag = True
 
-    file_path = 'video.webm'
+    file_path = '/workspace/data/C0133_v4.mp4'
     if asyncVideo_flag :
         video_capture = VideoCaptureAsync(file_path)
+    elif ipcamera_flag :
+        video_capture = cv2.VideoCapture('rtsp://camera:Camera123@192.168.2.201/ONVIF/MediaInput?profile=def_profile1')
+    elif webcamera_flag :
+        video_capture = cv2.VideoCapture(0)
     else:
         video_capture = cv2.VideoCapture(file_path)
         
@@ -60,16 +70,32 @@ def main(yolo):
         out = cv2.VideoWriter('output_yolov4.avi', fourcc, 30, (w, h))
         frame_index = -1
 
+    if udp_flag:
+        HOST = ''
+        PORT = 5000
+        address = '192.168.2.255'
+        sock =socket(AF_INET, SOCK_DGRAM)
+        sock.setsockopt(SOL_SOCKET, SO_BROADCAST, 1)
+        sock.bind((HOST, PORT))
+
+
     fps = 0.0
     fps_imutils = imutils.video.FPS().start()
+    
+    savetime = 0
 
     while True:
+        nowtime = datetime.datetime.now().isoformat()
         ret, frame = video_capture.read()  # frame shape 640*480*3
         if ret != True:
              break
 
         t1 = time.time()
 
+        if time.time() - savetime >= 30: 
+            print('save data') 
+            cv2.imwrite("/workspace/images/image.png", frame)
+            savetime = time.time()
         image = Image.fromarray(frame[...,::-1])  # bgr to rgb
         boxes, confidence, classes = yolo.detect_image(image)
 
@@ -100,6 +126,13 @@ def main(yolo):
                 cv2.rectangle(frame, (int(bbox[0]), int(bbox[1])), (int(bbox[2]), int(bbox[3])), (255, 255, 255), 2)
                 cv2.putText(frame, "ID: " + str(track.track_id), (int(bbox[0]), int(bbox[1])), 0,
                             1.5e-3 * frame.shape[0], (0, 255, 0), 1)
+                # socket
+                message = str(nowtime + "," + str(track.track_id) + "," + str(int(bbox[0])) + "," + str(int(bbox[1])) + "," + str(int(bbox[2])) + "," + str(int(bbox[3])))
+                bmessage = message.encode('utf-8')
+                print(type(bmessage))
+                if udp_flag:
+                    sock.sendto(message.encode('utf-8'), (address, PORT))
+
 
         for det in detections:
             bbox = det.to_tlbr()
@@ -110,7 +143,7 @@ def main(yolo):
                 cv2.putText(frame, str(cls) + " " + score, (int(bbox[0]), int(bbox[3])), 0,
                             1.5e-3 * frame.shape[0], (0, 255, 0), 1)
 
-        cv2.imshow('', frame)
+        #cv2.imshow('', frame)
 
         if writeVideo_flag: # and not asyncVideo_flag:
             # save a frame
