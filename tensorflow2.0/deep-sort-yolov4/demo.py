@@ -88,6 +88,7 @@ def main(yolo):
         nowtime = datetime.datetime.now().isoformat()
         ret, frame = video_capture.read()  # frame shape 640*480*3
         if ret != True:
+            print('1')
              break
 
         t1 = time.time()
