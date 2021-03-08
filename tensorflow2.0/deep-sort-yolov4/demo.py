@@ -157,6 +157,8 @@ def main(yolo):
             # Press Q to stop!
             if cv2.waitKey(1) & 0xFF == ord('q'):
                 break
+        else:
+            video_capture = cv2.VideoCapture('rtsp://camera:Camera123@192.168.2.201/ONVIF/MediaInput?profile=def_profile1') 
 
     fps_imutils.stop()
     print('imutils FPS: {}'.format(fps_imutils.fps()))
