@@ -1,20 +1,19 @@
 # Getting Started With Jetson Xavier NX Developer Kit
 
-## 1. イメージファイルのダウンロード
-
-以下からイメージファイル (Jetson Xavier NX Developer Kit SD Card Image) をダウンロードする
+## 1. イメージファイルのダウンロード (コンピュータを用いる)
+* 以下からイメージファイル (Jetson Xavier NX Developer Kit SD Card Image) をコンピュータにダウンロードする
 
 <https://developer.nvidia.com/jetson-nx-developer-kit-sd-card-image>
 
-## 2. microSDカードに書き込み
-* この時点ではmicroSDカードを挿入しない
-* ターミナルを起動し，既に挿入されている外部デバイスを調べる
+## 2. microSDカードに書き込み (コンピュータを用いる)
+* この時点ではmicroSDカードをコンピュータへ挿入しない
+* ターミナルを起動し，コンピュータへ既に挿入されている外部デバイスを調べる
 
 ```
 diskutil list external | fgrep '/dev/disk'
 ```
 
-* microSDカードを挿入する．読み取りのエラー画面が表示された場合は無視する
+* microSDカードをコンピュータへ挿入する．読み取りのエラー画面が表示された場合は無視する
 * 再び外部デバイスを調べ，microSDカードのデバイス名を確認する (e.g.; /dev/disk2)
 
 ```
@@ -35,14 +34,14 @@ sudo diskutil partitionDisk /dev/disk<n> 1 GPT "Free Space" "%noformat%" 100%
 
 * 書き込みが完了した後，読み取りのエラー画面が表示されるが無視する
 
-## 3. Jetsonのセットアップ
+## 3. Jetsonの起動
 
-* microSDカードをJetsonのスロット (本体の下側) に挿入
+* microSDカードをJetsonのスロット (本体の下側) へ挿入
 * ディスプレイの電源を入れ，Jetsonへ接続
 * キーボードおよびマウスをJetsonへ接続
 * 電源ケーブルををJetsonへ接続．Jetsonの電源が入り，自動的に起動する
 
 
-## 4. 初期設定
+## 4. Jetsonの初期設定
 Jetsonの電源が入るとMicro-USBコネクターの隣にある緑色のLEDが点灯する．ウィザードに従って初期設定を行う
 
