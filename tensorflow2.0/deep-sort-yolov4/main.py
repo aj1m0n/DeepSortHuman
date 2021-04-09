@@ -23,7 +23,12 @@ import datetime
 
 from socket import *
 
+import argparse
+
+
 warnings.filterwarnings('ignore')
+
+
 
 def main(yolo):
 
@@ -39,12 +44,12 @@ def main(yolo):
     metric = nn_matching.NearestNeighborDistanceMetric("cosine", max_cosine_distance, nn_budget)
     tracker = Tracker(metric)
 
-    tracking = True
-    writeVideo_flag = False
-    asyncVideo_flag = False
-    webcamera_flag = True
-    ipcamera_flag = False
-    udp_flag = True
+    tracking = args.tracking
+    writeVideo_flag = args.writeVideo_flag
+    asyncVideo_flag = args.asyncVideo_flag
+    webcamera_flag = args.webcamera_flag
+    ipcamera_flag = args.ipcamera_flag
+    udp_flag = args.udp_flag
 
     file_path = '/workspace/data/C0133_v4.mp4'
     if asyncVideo_flag :
@@ -171,4 +176,13 @@ def main(yolo):
     cv2.destroyAllWindows()
 
 if __name__ == '__main__':
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--tracking", default=True)
+    parser.add_argument("--writeVideo_flag", default=False)
+    parser.add_argument("--asyncVideo_flag", default=False)
+    parser.add_argument("--webcamera_flag", default=False)
+    parser.add_argument("--ipcamera_flag", default=False)
+    parser.add_argument("--udp_flag", default=True)
+    parser.add_argument("--videofile", default="/workspace/data/C0133_v4.mp4", type=str)
+    args = parser.parse_args()
     main(YOLO())
