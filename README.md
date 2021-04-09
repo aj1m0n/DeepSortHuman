@@ -13,7 +13,7 @@ Turning off tracking gave ~12.5fps with YOLO v4.
 
 All tests were done using an Nvidia Jetson Xavier NX.
 
-However,using webcamera is much slower than reading video.(~2.0fps)
+However,using webcamera is much slower than loading video.(~2.0fps)
 
 # Docker image
 
@@ -22,16 +22,30 @@ docker pull aj1m0n/deep_sort:latest
 ```
 
 # Quick start
-[Download](https://drive.google.com/open?id=1cewMfusmPjYWbrnuJRuKhPMwRe_b9PaT) and convert the Darknet YOLO v4 model  to a Keras model by modifying `convert.py` accordingly and run:
-```
-python convert.py
-```
-Then run main.py:
-```
-python main.py
-```
-
 ## Settings
+### Directory structure
+
+```
+/
+├ home/
+│  └ username/
+│       └ workspace/
+│           ├ Deep_Sort/
+│           │    └ tesnorflow2.0/
+│           │        └ deep-sort-yolov4/
+│           │            └ main.py
+│           │            └ model_data/
+│           │                └ yolov4.weights
+
+│           └ data/
+│               └ C0133_v4.mp4
+```
+[Download Yolov4](https://drive.google.com/open?id=1cewMfusmPjYWbrnuJRuKhPMwRe_b9PaT) to model_data
+
+[Download video](
+https://drive.google.com/file/d/1Gri4rt8zx7BLPza_-E8FEsMqnMyB93A4/view?usp=sharing) to ~/workspace/data/
+
+
 ### Pull Docker image to Jetson Xavier NX
 ```
 docker pull aj1m0n/deep_sort:latest
@@ -63,8 +77,19 @@ If you do not want to use webcamera, delete --device /dev/video0:/dev/video0.
 docker run -it -v ~/workspace/:/workspace/ --device /dev/video0:/dev/video0 --runtime nvidia --network host aj1m0n/deep_sort:latest
 ```
 
+### Convert keras format
+convert the Darknet YOLO v4 model  to a Keras model by modifying `convert.py` accordingly and run:
+```
+python3 convert.py
+```
+
+### Run script
+```
+python3 main.py
+```
 ### Normal Deep SORT
 By default, tracking and video writing is on and asynchronous processing is off.
+Parser example:
 ```
 parser.add_argument("--tracking", default=True)
 parser.add_argument("--writeVideo_flag", default=False)
@@ -72,18 +97,14 @@ parser.add_argument("--asyncVideo_flag", default=False)
 parser.add_argument("--webcamera_flag", default=False)
 parser.add_argument("--ipcamera_flag", default=False)
 parser.add_argument("--udp_flag", default=True)
-```
+parser.add_argument("--videofile", default="/workspace/data/C0133_v4.mp4", type=str)
 
+```
 To change target file:
 ```
 python3 main.py --videofile /workspace/data/C0133_v4.mp4
 ```
 
-
-To change output settings in `main.py`:
-```
-out = cv2.VideoWriter('output_yolov4.avi', fourcc, 30, (w, h))
-```
 
 ### Deep SORT with low confidence track filtering
 This version has the option to hide object detections instead of tracking. The settings in `main.py` are
