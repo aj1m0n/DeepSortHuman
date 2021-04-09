@@ -3,59 +3,26 @@ This project was inspired by:
 * https://github.com/nwojke/deep_sort
 * https://github.com/Ma-Dan/keras-yolo4
 * https://github.com/Qidian213/deep_sort_yolov3
-
-I swapped out YOLO v3 for YOLO v4 and added the option for asynchronous processing, which significantly improves
-the FPS. However, FPS monitoring is disabled when asynchronous processing is used since it isn't accurate.
-
-In addition, I took the algorithm from this [paper](https://ieeexplore.ieee.org/document/8909903) and implemented it into `deep_sort/track.py`.
-The original method for confirming tracks was based simply on the number of times an object has been detected without considering detection confidence, leading to high tracking false positive rates when unreliable detections occur (i.e. low confidence true positives or high confidence false positives). The track filtering algorithm reduces this significantly by calculating the average detection confidence over a set number of detections before confirming a track.
-
-See the comparison video below.
-
-## Low confidence track filtering
-[![Comparison Video Link](https://img.youtube.com/vi/01Geud6GmB4/0.jpg)](https://youtu.be/01Geud6GmB4)
-
-Navigate to the appropriate folder to use low confidence track filtering. The above video demonstrates the difference.
-
-See the settings section for parameter instructions.
-
-## YOLO v3 and YOLO v4 comparison video with Deep SORT
-[![Comparison Video Link](https://img.youtube.com/vi/_8WkO3hVOlY/0.jpg)](https://youtu.be/_8WkO3hVOlY)
-
-## With asynchronous processing
-![](gifs/async_example.gif)
-
-As you can see in the gif, asynchronous processing has better FPS but causes stuttering.
-
-This code only detects and tracks people, but can be changed to detect other objects by changing lines 103 in `yolo.py`. For example, to detect people and cars, change
-```
-if predicted_class != 'person':
-    continue
-```
-to
-```
-if predicted_class not in ('person', 'car'):
-    continue
-```
+* https://github.com/LeonLok/Deep-SORT-YOLOv4
 
 ## Performance
 Real-time FPS with video writing:
-* ~4.3fps with YOLO v3
 * ~10.6fps with YOLO v4
 
 Turning off tracking gave ~12.5fps with YOLO v4.
 
-YOLO v4 performs much faster and appears to be more stable than YOLO v3. All tests were done using an Nvidia GTX 1070 8gb GPU
- and an i7-8700k CPU.
+All tests were done using an Nvidia Xavier NX.
+
+However,using webcamera is much slower than reading video.(~2.0fps)
 
 # Quick start
 [Download](https://drive.google.com/open?id=1cewMfusmPjYWbrnuJRuKhPMwRe_b9PaT) and convert the Darknet YOLO v4 model  to a Keras model by modifying `convert.py` accordingly and run:
 ```
 python convert.py
 ```
-Then run demo.py:
+Then run main.py:
 ```
-python demo.py
+python main.py
 ```
 
 ## Settings
