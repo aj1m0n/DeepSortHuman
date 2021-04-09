@@ -1,5 +1,6 @@
 *.weights
 *.h5
+*.python-version
 tensorflow1.14/.python-version
 tensorflow2.0/deep-sort-yolov4/__pycache__/videocaptureasync.cpython-36.pyc
 __pycache__/
