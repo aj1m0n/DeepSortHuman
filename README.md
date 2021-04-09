@@ -32,19 +32,53 @@ python main.py
 ```
 
 ## Settings
+### Pull Docker image to Jetson Xavier NX
+```
+docker pull aj1m0n/deep_sort:latest
+```
+
+Run docker without sudo
+```
+# dockerグループがなければ作る
+sudo groupadd docker
+
+# 現行ユーザをdockerグループに所属させる
+sudo gpasswd -a $USER docker
+
+# dockerデーモンを再起動する (CentOS7の場合)
+sudo systemctl restart docker
+
+# exitして再ログインすると反映される。
+exit
+```
+
+### Run docker
+make workspce directory.
+```
+mkdir ~/workspace/
+```
+run docker image with webcamera(/dev/video0).
+If you do not want to use webcamera, delete --device /dev/video0:/dev/video0.
+```
+docker run -it -v ~/workspace/:/workspace/ --device /dev/video0:/dev/video0 --runtime nvidia --network host aj1m0n/deep_sort:latest
+```
 
 ### Normal Deep SORT
-By default, tracking and video writing is on and asynchronous processing is off. These can be edited in `demo.py` by changing:
+By default, tracking and video writing is on and asynchronous processing is off.
 ```
-tracking = True
-writeVideo_flag = True
-asyncVideo_flag = False
+parser.add_argument("--tracking", default=True)
+parser.add_argument("--writeVideo_flag", default=False)
+parser.add_argument("--asyncVideo_flag", default=False)
+parser.add_argument("--webcamera_flag", default=False)
+parser.add_argument("--ipcamera_flag", default=False)
+parser.add_argument("--udp_flag", default=True)
 ```
 
-To change target file in `main.py`:
+To change target file:
 ```
-file_path = 'video.webm'
+python3 main.py --videofile /workspace/data/C0133_v4.mp4
 ```
+
 
 To change output settings in `main.py`:
 ```
@@ -73,31 +107,3 @@ Please note that the tracking model used here is only trained on tracking people
 See https://github.com/nwojke/cosine_metric_learning for more details on training your own tracking model.
 
 For those that want to train their own **vehicle** tracking model, I've created a tool for converting the [DETRAC](http://detrac-db.rit.albany.edu/) dataset into a trainable format for cosine metric learning and can be found in my object tracking repository [here](https://github.com/LeonLok/Multi-Camera-Live-Object-Tracking/tree/master/detrac_tools). The tool was created using the earlier mentioned [paper](https://ieeexplore.ieee.org/document/8909903) as reference with the same parameters.
-
-# Dependencies
-* Tensorflow GPU 1.14
-* Keras 2.3.1
-* opencv-python 4.2.0
-* imutils 0.5.3
-* numpy 1.18.2
-* sklearn
-
-## Running with Tensorflow 1.14 vs 2.0
-Navigate to the appropriate folder and run python scripts. 
-
-### Conda environment used for Tensorflow 2.0
-(see requirements.txt)
-* imutils                   0.5.3                    
-* keras                     2.3.1                    
-* matplotlib                3.2.1                    
-* numpy                     1.18.4                   
-* opencv-python             4.2.0.34                 
-* pillow                    7.1.2                    
-* python                    3.6.10               
-* scikit-learn              0.23.1                   
-* scipy                     1.4.1                    
-* sklearn                   0.19                     
-* tensorboard               2.2.1                    
-* tensorflow                2.0.0                    
-* tensorflow-estimator      2.1.0                    
-* tensorflow-gpu            2.2.0                    
