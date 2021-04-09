@@ -36,7 +36,6 @@ docker pull aj1m0n/deep_sort:latest
 │           │            └ main.py
 │           │            └ model_data/
 │           │                └ yolov4.weights
-
 │           └ data/
 │               └ C0133_v4.mp4
 ```

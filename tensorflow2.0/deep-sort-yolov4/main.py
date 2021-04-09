@@ -55,7 +55,7 @@ def main(yolo):
     if asyncVideo_flag :
         video_capture = VideoCaptureAsync(file_path)
     elif ipcamera_flag :
-        video_capture = cv2.VideoCapture('rtsp://camera:Camera123@192.168.2.201/ONVIF/MediaInput?profile=def_profile1')
+        video_capture = cv2.VideoCapture(args.cam_ip)
     elif webcamera_flag :
         video_capture = cv2.VideoCapture(0)
     else:
@@ -131,7 +131,7 @@ def main(yolo):
                 # socket
                 message = str(nowtime + "," + str(track.track_id) + "," + str(int(bbox[0])) + "," + str(int(bbox[1])) + "," + str(int(bbox[2])) + "," + str(int(bbox[3])))
                 bmessage = message.encode('utf-8')
-                print(type(bmessage))
+                print(bmessage)
                 if udp_flag:
                     sock.sendto(message.encode('utf-8'), (address, PORT))
 
@@ -182,7 +182,8 @@ if __name__ == '__main__':
     parser.add_argument("--asyncVideo_flag", default=True)
     parser.add_argument("--webcamera_flag", default=False)
     parser.add_argument("--ipcamera_flag", default=False)
-    parser.add_argument("--udp_flag", default=True)
+    parser.add_argument("--udp_flag", default=False)
+    parser.add_argument("--cam_ip", default="rtsp://camera:Camera123@192.168.2.201/ONVIF/MediaInput?profile=def_profile1", type=str)
     parser.add_argument("--videofile", default="/workspace/data/C0133_v4.mp4", type=str)
     args = parser.parse_args()
     main(YOLO())
