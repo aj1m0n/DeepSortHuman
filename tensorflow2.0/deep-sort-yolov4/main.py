@@ -179,7 +179,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument("--tracking", default=True)
     parser.add_argument("--writeVideo_flag", default=False)
-    parser.add_argument("--asyncVideo_flag", default=False)
+    parser.add_argument("--asyncVideo_flag", default=True)
     parser.add_argument("--webcamera_flag", default=False)
     parser.add_argument("--ipcamera_flag", default=False)
     parser.add_argument("--udp_flag", default=True)
