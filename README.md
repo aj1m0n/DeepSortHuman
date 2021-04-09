@@ -11,9 +11,15 @@ Real-time FPS with video writing:
 
 Turning off tracking gave ~12.5fps with YOLO v4.
 
-All tests were done using an Nvidia Xavier NX.
+All tests were done using an Nvidia Jetson Xavier NX.
 
 However,using webcamera is much slower than reading video.(~2.0fps)
+
+# Docker image
+
+```
+docker pull aj1m0n/deep_sort:latest
+```
 
 # Quick start
 [Download](https://drive.google.com/open?id=1cewMfusmPjYWbrnuJRuKhPMwRe_b9PaT) and convert the Darknet YOLO v4 model  to a Keras model by modifying `convert.py` accordingly and run:
@@ -35,18 +41,18 @@ writeVideo_flag = True
 asyncVideo_flag = False
 ```
 
-To change target file in `demo.py`:
+To change target file in `main.py`:
 ```
 file_path = 'video.webm'
 ```
 
-To change output settings in `demo.py`:
+To change output settings in `main.py`:
 ```
 out = cv2.VideoWriter('output_yolov4.avi', fourcc, 30, (w, h))
 ```
 
 ### Deep SORT with low confidence track filtering
-This version has the option to hide object detections instead of tracking. The settings in `demo.py` are
+This version has the option to hide object detections instead of tracking. The settings in `main.py` are
 ```
 show_detections = True
 writeVideo_flag = True
