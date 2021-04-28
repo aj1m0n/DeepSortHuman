@@ -53,16 +53,20 @@ def main(yolo):
 
     file_path = '/workspace/data/C0133_v4.mp4'
     if asyncVideo_flag :
+        print("load videofile")
         video_capture = VideoCaptureAsync(file_path)
     elif ipcamera_flag :
+        print("load ipcamera")
         video_capture = cv2.VideoCapture(args.cam_ip)
     elif webcamera_flag :
+        print("load webcamera")
         video_capture = cv2.VideoCapture(0)
     else:
+        print("load videofile")
         video_capture = cv2.VideoCapture(file_path)
         
-    if asyncVideo_flag:
-        video_capture.start()
+    
+    # video_capture.start()
 
     if writeVideo_flag:
         if asyncVideo_flag:
@@ -96,7 +100,7 @@ def main(yolo):
 
         if time.time() - savetime >= 30: 
             print('save data') 
-            cv2.imwrite("/workspace/images/image.png", frame)
+            # cv2.imwrite("/workspace/images/image.png", frame)
             savetime = time.time()
         image = Image.fromarray(frame[...,::-1])  # bgr to rgb
         boxes, confidence, classes = yolo.detect_image(image)
@@ -176,10 +180,11 @@ def main(yolo):
     cv2.destroyAllWindows()
 
 if __name__ == '__main__':
+    print('ver1.0')
     parser = argparse.ArgumentParser()
     parser.add_argument("--tracking", default=True)
     parser.add_argument("--writeVideo_flag", default=False)
-    parser.add_argument("--asyncVideo_flag", default=True)
+    parser.add_argument("--asyncVideo_flag", default=False)
     parser.add_argument("--webcamera_flag", default=False)
     parser.add_argument("--ipcamera_flag", default=False)
     parser.add_argument("--udp_flag", default=False)
