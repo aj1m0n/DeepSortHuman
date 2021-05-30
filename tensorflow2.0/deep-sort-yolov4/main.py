@@ -58,6 +58,11 @@ def main(yolo):
     elif ipcamera_flag :
         print("load ipcamera")
         video_capture = cv2.VideoCapture(args.cam_ip)
+        video_capture.set(cv2.CAP_PROP_FOURCC, cv2.VideoWriter_fourcc('M','J','P','G'))
+        width = video_capture.get(cv2.CAP_PROP_FRAME_WIDTH)
+        height = video_capture.get(cv2.CAP_PROP_FRAME_HEIGHT)
+        fps = video_capture.get(cv2.CAP_PROP_FPS)
+        print("fps:{}　width:{}　height:{}".format(fps, width, height))
     elif webcamera_flag :
         print("load webcamera")
         video_capture = cv2.VideoCapture(0)
@@ -135,7 +140,7 @@ def main(yolo):
                 # socket
                 message = str(nowtime + "," + str(track.track_id) + "," + str(int(bbox[0])) + "," + str(int(bbox[1])) + "," + str(int(bbox[2])) + "," + str(int(bbox[3])))
                 bmessage = message.encode('utf-8')
-                print(bmessage)
+                # print(bmessage)
                 if udp_flag:
                     sock.sendto(message.encode('utf-8'), (address, PORT))
 
@@ -165,6 +170,10 @@ def main(yolo):
         # Press Q to stop!
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
+        
+        ### 読み飛ばし処理を追加 ###
+        for _i in range (15) :
+            ret, frame = video_capture.read()
 
     fps_imutils.stop()
     print('imutils FPS: {}'.format(fps_imutils.fps()))
