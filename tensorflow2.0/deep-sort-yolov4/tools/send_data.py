@@ -2,13 +2,17 @@ import json
 import collections as cl
 
 
-def create_data(_camera_ip, _car_id_list, _position_list, _daytime):
+def create_jsondata(_camera_ip, _date, _car_data):
     _data = cl.OrderedDict()
     _data["IP"] = _camera_ip,
-    _data["date"] = _daytime,
-    _data["data"] = cl.OrderedDict(zip(_car_id_list, _position_list))
+    _data["date"] = _date,
+    _data["data"] = cl.OrderedDict(_car_data)
  
     return json.dumps(_data)
+
+def create_dummy_data(_jsondata):
+    _json_dict = json.load(_jsondata)
+    
 
 if __name__ == "__main__":
     import datetime

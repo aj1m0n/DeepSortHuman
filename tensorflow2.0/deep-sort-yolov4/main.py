@@ -16,6 +16,7 @@ from deep_sort.detection import Detection
 from deep_sort.detection_yolo import Detection_YOLO
 from deep_sort.tracker import Tracker
 from tools import generate_detections as gdet
+from tools import send_data as sd
 import imutils.video
 from videocaptureasync import VideoCaptureAsync
 
@@ -124,7 +125,7 @@ def main(yolo):
         scores = np.array([d.confidence for d in detections])
         indices = preprocessing.non_max_suppression(boxes, nms_max_overlap, scores)
         detections = [detections[i] for i in indices]
-
+        car_data = {}
         if tracking:
             # Call the tracker
             tracker.predict()
@@ -134,15 +135,18 @@ def main(yolo):
                 if not track.is_confirmed() or track.time_since_update > 1:
                     continue
                 bbox = track.to_tlbr()
-                cv2.rectangle(frame, (int(bbox[0]), int(bbox[1])), (int(bbox[2]), int(bbox[3])), (255, 255, 255), 2)
-                cv2.putText(frame, "ID: " + str(track.track_id), (int(bbox[0]), int(bbox[1])), 0,
-                            1.5e-3 * frame.shape[0], (0, 255, 0), 1)
+                # cv2.rectangle(frame, (int(bbox[0]), int(bbox[1])), (int(bbox[2]), int(bbox[3])), (255, 255, 255), 2)
+                # cv2.putText(frame, "ID: " + str(track.track_id), (int(bbox[0]), int(bbox[1])), 0,
+                #             1.5e-3 * frame.shape[0], (0, 255, 0), 1)
                 # socket
-                message = str(nowtime + "," + str(track.track_id) + "," + str(int(bbox[0])) + "," + str(int(bbox[1])) + "," + str(int(bbox[2])) + "," + str(int(bbox[3])))
-                bmessage = message.encode('utf-8')
+                # message = str(nowtime + "," + str(track.track_id) + "," + str(int(bbox[0])) + "," + str(int(bbox[1])) + "," + str(int(bbox[2])) + "," + str(int(bbox[3])))
+                # bmessage = message.encode('utf-8')
+
                 # print(bmessage)
+                car_data[str(track.track_id)] = [int(bbox[0]), int(bbox[1]), int(bbox[2]), int(bbox[3])]
                 if udp_flag:
                     sock.sendto(message.encode('utf-8'), (address, PORT))
+            print(sd.create_jsondata("192.168.1.1",nowtime,car_data))
 
 
         for det in detections:
@@ -172,8 +176,8 @@ def main(yolo):
             break
         
         ### 読み飛ばし処理を追加 ###
-        for _i in range (15) :
-            ret, frame = video_capture.read()
+        # for _i in range (15) :
+        #     ret, frame = video_capture.read()
 
     fps_imutils.stop()
     print('imutils FPS: {}'.format(fps_imutils.fps()))
