@@ -59,11 +59,13 @@ def main(yolo):
     elif ipcamera_flag :
         print("load ipcamera")
         video_capture = cv2.VideoCapture(args.cam_ip)
-        video_capture.set(cv2.CAP_PROP_FOURCC, cv2.VideoWriter_fourcc('M','J','P','G'))
+        # video_capture.set(cv2.CAP_PROP_FOURCC, cv2.VideoWriter_fourcc('M','J','P','G'))
         width = video_capture.get(cv2.CAP_PROP_FRAME_WIDTH)
         height = video_capture.get(cv2.CAP_PROP_FRAME_HEIGHT)
         fps = video_capture.get(cv2.CAP_PROP_FPS)
-        print("fps:{}　width:{}　height:{}".format(fps, width, height))
+        print("fps:{}width:{}height:{}".format(fps, width, height))
+        cam_ip = args.cam_ip
+        cam_ip = cam_ip.replace("/ONVIF/MediaInput?profile=def_profile1","").replace("rtsp://camera:Camera123@","")
     elif webcamera_flag :
         print("load webcamera")
         video_capture = cv2.VideoCapture(0)
@@ -98,7 +100,7 @@ def main(yolo):
     fps_imutils = imutils.video.FPS().start()
     
     savetime = 0
-
+    
     while True:
         nowtime = datetime.datetime.now().isoformat()
         ret, frame = video_capture.read()  # frame shape 640*480*3
@@ -106,7 +108,7 @@ def main(yolo):
 
         if time.time() - savetime >= 30: 
             print('save data') 
-            # cv2.imwrite("/workspace/images/image.png", frame)
+            cv2.imwrite("/workspace/images/image.png", frame)
             savetime = time.time()
         image = Image.fromarray(frame[...,::-1])  # bgr to rgb
         boxes, confidence, classes = yolo.detect_image(image)
@@ -135,18 +137,10 @@ def main(yolo):
                 if not track.is_confirmed() or track.time_since_update > 1:
                     continue
                 bbox = track.to_tlbr()
-                # cv2.rectangle(frame, (int(bbox[0]), int(bbox[1])), (int(bbox[2]), int(bbox[3])), (255, 255, 255), 2)
-                # cv2.putText(frame, "ID: " + str(track.track_id), (int(bbox[0]), int(bbox[1])), 0,
-                #             1.5e-3 * frame.shape[0], (0, 255, 0), 1)
-                # socket
-                # message = str(nowtime + "," + str(track.track_id) + "," + str(int(bbox[0])) + "," + str(int(bbox[1])) + "," + str(int(bbox[2])) + "," + str(int(bbox[3])))
-                # bmessage = message.encode('utf-8')
-
-                # print(bmessage)
                 car_data[str(track.track_id)] = [int(bbox[0]), int(bbox[1]), int(bbox[2]), int(bbox[3])]
                 if udp_flag:
                     sock.sendto(message.encode('utf-8'), (address, PORT))
-            print(sd.create_jsondata("192.168.1.1",nowtime,car_data))
+            print(sd.create_jsondata(cam_ip,nowtime,car_data))
 
 
         for det in detections:
@@ -176,8 +170,8 @@ def main(yolo):
             break
         
         ### 読み飛ばし処理を追加 ###
-        # for _i in range (15) :
-        #     ret, frame = video_capture.read()
+        for _i in range (15) :
+            ret, frame = video_capture.read()
 
     fps_imutils.stop()
     print('imutils FPS: {}'.format(fps_imutils.fps()))
