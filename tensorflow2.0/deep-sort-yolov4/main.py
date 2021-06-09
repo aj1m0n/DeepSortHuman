@@ -52,7 +52,9 @@ def main(yolo):
     ipcamera_flag = args.ipcamera_flag
     udp_flag = args.udp_flag
 
-    file_path = '/workspace/data/C0133_v4.mp4'
+    file_path = '/workspace/data/C0133-480p.mp4'
+    cam_ip = args.cam_ip
+    cam_ip = cam_ip.replace("/ONVIF/MediaInput?profile=def_profile1","").replace("rtsp://camera:Camera123@","")
     if asyncVideo_flag :
         print("load videofile")
         video_capture = VideoCaptureAsync(file_path)
@@ -64,8 +66,6 @@ def main(yolo):
         height = video_capture.get(cv2.CAP_PROP_FRAME_HEIGHT)
         fps = video_capture.get(cv2.CAP_PROP_FPS)
         print("fps:{}width:{}height:{}".format(fps, width, height))
-        cam_ip = args.cam_ip
-        cam_ip = cam_ip.replace("/ONVIF/MediaInput?profile=def_profile1","").replace("rtsp://camera:Camera123@","")
     elif webcamera_flag :
         print("load webcamera")
         video_capture = cv2.VideoCapture(0)
