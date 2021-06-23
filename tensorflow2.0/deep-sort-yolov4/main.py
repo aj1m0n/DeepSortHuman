@@ -52,12 +52,12 @@ def main(yolo):
     ipcamera_flag = args.ipcamera_flag
     udp_flag = args.udp_flag
 
-    file_path = '/workspace/data/C0133-480p.mp4'
     cam_ip = args.cam_ip
     cam_ip = cam_ip.replace("/ONVIF/MediaInput?profile=def_profile1","").replace("rtsp://camera:Camera123@","")
+  
     if asyncVideo_flag :
         print("load videofile")
-        video_capture = VideoCaptureAsync(file_path)
+        video_capture = VideoCaptureAsync(args.videofile)
     elif ipcamera_flag :
         print("load ipcamera")
         video_capture = cv2.VideoCapture(args.cam_ip)
@@ -71,9 +71,8 @@ def main(yolo):
         video_capture = cv2.VideoCapture(0)
     else:
         print("load videofile")
-        video_capture = cv2.VideoCapture(file_path)
+        video_capture = cv2.VideoCapture(args.videofile)
         
-    
     # video_capture.start()
 
     if writeVideo_flag:
@@ -94,22 +93,23 @@ def main(yolo):
         sock =socket(AF_INET, SOCK_DGRAM)
         sock.setsockopt(SOL_SOCKET, SO_BROADCAST, 1)
         sock.bind((HOST, PORT))
-
-
+        
     fps = 0.0
     fps_imutils = imutils.video.FPS().start()
     
+    i = 0
+
     savetime = 0
     
     while True:
         nowtime = datetime.datetime.now().isoformat()
         ret, frame = video_capture.read()  # frame shape 640*480*3
         t1 = time.time()
-
-        if time.time() - savetime >= 30: 
-            print('save data') 
-            cv2.imwrite("/workspace/images/image.png", frame)
-            savetime = time.time()
+          
+        # if time.time() - savetime >= 30: 
+        #     print('save data') 
+        #     cv2.imwrite("/workspace/images/image.png", frame)
+        #     savetime = time.time()
         image = Image.fromarray(frame[...,::-1])  # bgr to rgb
         boxes, confidence, classes = yolo.detect_image(image)
 
@@ -140,7 +140,7 @@ def main(yolo):
                 car_data[str(track.track_id)] = [int(bbox[0]), int(bbox[1]), int(bbox[2]), int(bbox[3])]
                 if udp_flag:
                     sock.sendto(message.encode('utf-8'), (address, PORT))
-            print(sd.create_jsondata(cam_ip,nowtime,car_data))
+            print(sd.create_jsondata(cam_ip,nowtime,car_data, args.jsonfile,args.json_path, i))
 
 
         for det in detections:
@@ -170,8 +170,10 @@ def main(yolo):
             break
         
         ### 読み飛ばし処理を追加 ###
-        for _i in range (15) :
-            ret, frame = video_capture.read()
+        # for _i in range (15) :
+        #     ret, frame = video_capture.read()
+    
+        i += 1
 
     fps_imutils.stop()
     print('imutils FPS: {}'.format(fps_imutils.fps()))
@@ -187,15 +189,17 @@ def main(yolo):
     cv2.destroyAllWindows()
 
 if __name__ == '__main__':
-    print('ver1.0')
+    print('ver1.2')
     parser = argparse.ArgumentParser()
-    parser.add_argument("--tracking", default=True)
-    parser.add_argument("--writeVideo_flag", default=False)
-    parser.add_argument("--asyncVideo_flag", default=False)
-    parser.add_argument("--webcamera_flag", default=False)
-    parser.add_argument("--ipcamera_flag", default=False)
-    parser.add_argument("--udp_flag", default=False)
+    parser.add_argument("-tracking", action = 'store_false')
+    parser.add_argument("-writeVideo_flag", action = 'store_true')
+    parser.add_argument("-asyncVideo_flag", action = 'store_true')
+    parser.add_argument("-webcamera_flag", action = 'store_true')
+    parser.add_argument("-ipcamera_flag", action = 'store_true')
+    parser.add_argument("-jsonfile", action = 'store_true')
+    parser.add_argument("-udp_flag", action = 'store_true')
     parser.add_argument("--cam_ip", default="rtsp://camera:Camera123@192.168.2.201/ONVIF/MediaInput?profile=def_profile1", type=str)
-    parser.add_argument("--videofile", default="/workspace/data/C0133_v4.mp4", type=str)
+    parser.add_argument("--videofile", default="/home/aj1m0n/MOT/data/C0133-480p.mp4", type=str)
+    parser.add_argument("--json_path", default='/home/aj1m0n/MOT/data/json/', type=str)
     args = parser.parse_args()
     main(YOLO())
