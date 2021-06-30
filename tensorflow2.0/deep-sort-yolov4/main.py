@@ -102,7 +102,7 @@ def main(yolo):
     savetime = 0
     
     while True:
-        nowtime = datetime.datetime.now().isoformat()
+        nowtime = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S.%f')
         ret, frame = video_capture.read()  # frame shape 640*480*3
         t1 = time.time()
           
@@ -140,7 +140,9 @@ def main(yolo):
                 car_data[str(track.track_id)] = [int(bbox[0]), int(bbox[1]), int(bbox[2]), int(bbox[3])]
                 if udp_flag:
                     sock.sendto(message.encode('utf-8'), (address, PORT))
-            print(sd.create_jsondata(cam_ip,nowtime,car_data, args.jsonfile,args.json_path, i))
+            if car_data:
+                print(sd.create_jsondata(cam_ip, nowtime, car_data, args.jsonfile, args.json_path, i))
+                i += 1
 
 
         for det in detections:
@@ -170,10 +172,11 @@ def main(yolo):
             break
         
         ### 読み飛ばし処理を追加 ###
-        # for _i in range (15) :
-        #     ret, frame = video_capture.read()
-    
-        i += 1
+        if !args.jsonfile and args.skip:
+            if fps <=10:
+                for _i in range (int(math.ceil(10/fps)) - 1) :
+                    ret, frame = video_capture.read()
+            
 
     fps_imutils.stop()
     print('imutils FPS: {}'.format(fps_imutils.fps()))
@@ -198,7 +201,8 @@ if __name__ == '__main__':
     parser.add_argument("-ipcamera_flag", action = 'store_true')
     parser.add_argument("-jsonfile", action = 'store_true')
     parser.add_argument("-udp_flag", action = 'store_true')
-    parser.add_argument("--cam_ip", default="rtsp://camera:Camera123@192.168.2.201/ONVIF/MediaInput?profile=def_profile1", type=str)
+    parser.add_argument("-skip", action = 'store_false')
+    parser.add_argument("--cam_ip", default="rtsp://camera:Camera123@192.168.10.51/ONVIF/MediaInput?profile=def_profile1", type=str)
     parser.add_argument("--videofile", default="/home/aj1m0n/MOT/data/C0133-480p.mp4", type=str)
     parser.add_argument("--json_path", default='/home/aj1m0n/MOT/data/json/', type=str)
     args = parser.parse_args()
