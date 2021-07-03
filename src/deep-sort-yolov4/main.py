@@ -26,6 +26,7 @@ from socket import *
 
 import argparse
 
+import math
 
 warnings.filterwarnings('ignore')
 
@@ -141,7 +142,7 @@ def main(yolo):
                 if udp_flag:
                     sock.sendto(message.encode('utf-8'), (address, PORT))
             if car_data:
-                print(sd.create_jsondata(cam_ip, nowtime, car_data, args.jsonfile, args.json_path, i))
+                sd.send_amqp(sd.create_jsondata(cam_ip, nowtime, car_data, args.jsonfile, args.json_path, i), args.key, args.AMQPHost)
                 i += 1
 
 
@@ -172,7 +173,7 @@ def main(yolo):
             break
         
         ### 読み飛ばし処理を追加 ###
-        if !args.jsonfile and args.skip:
+        if not args.jsonfile and args.skip:
             if fps <=10:
                 for _i in range (int(math.ceil(10/fps)) - 1) :
                     ret, frame = video_capture.read()
@@ -202,6 +203,9 @@ if __name__ == '__main__':
     parser.add_argument("-jsonfile", action = 'store_true')
     parser.add_argument("-udp_flag", action = 'store_true')
     parser.add_argument("-skip", action = 'store_false')
+    parser.add_argument("--AMQPHost", default = 'localhost', type=str)
+    parser.add_argument("--key", default = 'jp.chiba.kashiwa.kashiwanoha.25.sensor.1', type=str)
+    
     parser.add_argument("--cam_ip", default="rtsp://camera:Camera123@192.168.10.51/ONVIF/MediaInput?profile=def_profile1", type=str)
     parser.add_argument("--videofile", default="/home/aj1m0n/MOT/data/C0133-480p.mp4", type=str)
     parser.add_argument("--json_path", default='/home/aj1m0n/MOT/data/json/', type=str)

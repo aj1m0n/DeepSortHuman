@@ -1,6 +1,7 @@
 import json
 import collections as cl
 from timeit import time
+import pika
 
 def create_jsondata(_camera_ip, _date, _car_data, _create_json_flag, _json_path, _i):
     _data = {}
@@ -8,7 +9,7 @@ def create_jsondata(_camera_ip, _date, _car_data, _create_json_flag, _json_path,
     _data["date"] = _date,
     _data["data"] = _car_data
     if _create_json_flag:
-        create_dummy_data(_data, _json_path, _i)    
+        create_dummy_data(_data, _json_path, _i) 
     return json.dumps(_data)
 
 def create_dummy_data(_data, _path, _i):
@@ -17,13 +18,13 @@ def create_dummy_data(_data, _path, _i):
 
     return True
 
-def send_amqp(_json_data):
-    _connection = pika.BlockingConnection(pika.ConnectionParameters(host='localhost'))
-	_channel = _connection.channel()
-	_channel.exchange_declare(exchange='signal', exchange_type='topic')
-	_json_command = str(_json_data)
+def send_amqp(_json_data, _key, _host):
+    _connection = pika.BlockingConnection(pika.ConnectionParameters(host=_host))
+    _channel = _connection.channel()
+    _channel.exchange_declare(exchange='signal', exchange_type='topic')
+    _json_command = str(_json_data)
     _channel.basic_publish(exchange='signal',routing_key=_key, body=_json_command)
-	print("Sent: {} Routing Key: {}".format(_json_command, _key))
+    print("Sent: {} Routing Key: {}".format(_json_command, _key))
 
 if __name__ == "__main__":
     import datetime
