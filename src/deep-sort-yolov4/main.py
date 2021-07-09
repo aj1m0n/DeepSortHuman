@@ -142,7 +142,7 @@ def main(yolo):
                 if udp_flag:
                     sock.sendto(message.encode('utf-8'), (address, PORT))
             if car_data:
-                sd.send_amqp(sd.create_jsondata(cam_ip, nowtime, car_data, args.jsonfile, args.json_path, i), args.key, args.AMQPHost)
+                sd.send_amqp(sd.create_jsondata(cam_ip, nowtime, time.time() - t1, car_data, args.jsonfile, args.json_path, i), args.key, args.AMQPHost)
                 i += 1
 
 

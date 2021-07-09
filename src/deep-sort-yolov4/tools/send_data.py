@@ -3,11 +3,12 @@ import collections as cl
 from timeit import time
 import pika
 
-def create_jsondata(_camera_ip, _date, _car_data, _create_json_flag, _json_path, _i):
+def create_jsondata(_camera_ip, _date, _dt, _car_data, _create_json_flag, _json_path, _i):
     _data = {}
     _data["IP"] = _camera_ip,
     _data["date"] = _date,
     _data["data"] = _car_data
+    _data["dt"] = _dt
     if _create_json_flag:
         create_dummy_data(_data, _json_path, _i) 
     return json.dumps(_data)
