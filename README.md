@@ -31,7 +31,7 @@ docker pull aj1m0n/deep_sort:latest
 │  └ username/
 │       └ workspace/
 │           ├ Deep_Sort/
-│           │    └ tesnorflow2.0/
+│           │    └ src/
 │           │        └ deep-sort-yolov4/
 │           │            └ main.py
 │           │            └ model_data/
@@ -90,14 +90,20 @@ python3 main.py
 By default, tracking and video writing is on and asynchronous processing is off.
 Parser example:
 ```
-parser.add_argument("--tracking", default=True)
-parser.add_argument("--writeVideo_flag", default=False)
-parser.add_argument("--asyncVideo_flag", default=False)
-parser.add_argument("--webcamera_flag", default=False)
-parser.add_argument("--ipcamera_flag", default=False)
-parser.add_argument("--udp_flag", default=True)
-parser.add_argument("--videofile", default="/workspace/data/C0133_v4.mp4", type=str)
+parser.add_argument("-tracking", action = 'store_false')
+parser.add_argument("-writeVideo_flag", action = 'store_true')
+parser.add_argument("-asyncVideo_flag", action = 'store_true')
+parser.add_argument("-webcamera_flag", action = 'store_true')
+parser.add_argument("-ipcamera_flag", action = 'store_true')
+parser.add_argument("-jsonfile", action = 'store_true')
+parser.add_argument("-udp_flag", action = 'store_true')
+parser.add_argument("-skip", action = 'store_false')
+parser.add_argument("--AMQPHost", default = 'localhost', type=str)
+parser.add_argument("--key", default = 'jp.chiba.kashiwa.kashiwanoha.25.sensor.1', type=str)
 
+parser.add_argument("--cam_ip", default="rtsp://camera:Camera123@192.168.10.51/ONVIF/MediaInput/h264", type=str)
+parser.add_argument("--videofile", default="/home/aj1m0n/MOT/data/C0133-480p.mp4", type=str)
+parser.add_argument("--json_path", default='/home/aj1m0n/MOT/data/json/', type=str)
 ```
 To change target file:
 ```
@@ -127,3 +133,21 @@ Please note that the tracking model used here is only trained on tracking people
 See https://github.com/nwojke/cosine_metric_learning for more details on training your own tracking model.
 
 For those that want to train their own **vehicle** tracking model, I've created a tool for converting the [DETRAC](http://detrac-db.rit.albany.edu/) dataset into a trainable format for cosine metric learning and can be found in my object tracking repository [here](https://github.com/LeonLok/Multi-Camera-Live-Object-Tracking/tree/master/detrac_tools). The tool was created using the earlier mentioned [paper](https://ieeexplore.ieee.org/document/8909903) as reference with the same parameters.
+
+## Automatic startup
+```
+#!/bin/sh -e
+#
+# rc.local
+#
+# This script is executed at the end of each multiuser runlevel.
+# Make sure that the script will "exit 0" on success or any other
+# value on error.
+#
+# In order to enable or disable this script just change the execution
+# bits.
+#
+# By default this script does nothing.
+
+docker run -it -v ~/workspace/:/workspace/ --runtime nvidia --network host aj1m0n/deep_sort:latest
+```
