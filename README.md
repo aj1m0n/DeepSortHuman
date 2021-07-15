@@ -149,5 +149,5 @@ For those that want to train their own **vehicle** tracking model, I've created 
 #
 # By default this script does nothing.
 
-docker run -it -v ~/workspace/:/workspace/ --runtime nvidia --network host aj1m0n/deep_sort:latest
+docker container start deepsort
 ```
