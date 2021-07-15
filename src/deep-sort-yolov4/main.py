@@ -54,7 +54,7 @@ def main(yolo):
     udp_flag = args.udp_flag
 
     cam_ip = args.cam_ip
-    cam_ip = cam_ip.replace("/ONVIF/MediaInput/h264","").replace("rtsp://camera:Camera123@","")
+    cam_ip = cam_ip.replace("/mediainput/h264","").replace("rtsp://camera:Camera123@","")
   
     if asyncVideo_flag :
         print("load videofile")
@@ -206,7 +206,7 @@ if __name__ == '__main__':
     parser.add_argument("--AMQPHost", default = 'localhost', type=str)
     parser.add_argument("--key", default = 'jp.chiba.kashiwa.kashiwanoha.25.sensor.1', type=str)
     
-    parser.add_argument("--cam_ip", default="rtsp://camera:Camera123@192.168.10.51/ONVIF/MediaInput/h264", type=str)
+    parser.add_argument("--cam_ip", default="rtsp://camera:Camera123@192.168.10.51/mediainput/h264", type=str)
     parser.add_argument("--videofile", default="/home/aj1m0n/MOT/data/C0133-480p.mp4", type=str)
     parser.add_argument("--json_path", default='/home/aj1m0n/MOT/data/json/', type=str)
     args = parser.parse_args()
