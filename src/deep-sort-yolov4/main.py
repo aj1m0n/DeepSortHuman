@@ -53,8 +53,11 @@ def main(yolo):
     ipcamera_flag = args.ipcamera_flag
     udp_flag = args.udp_flag
 
-    cam_ip = args.cam_ip
-    cam_ip = cam_ip.replace("/mediainput/h264","").replace("rtsp://camera:Camera123@","")
+    full_cam_addr, key = sd.set_address(args.ipaddress, args.cam_ip, args.cam_cmd, args.key)
+    cam_ip = full_cam_addr.replace(args.cam_cmd, "")
+    print(full_cam_addr)
+    print(key)
+
   
     if asyncVideo_flag :
         print("load videofile")
@@ -142,7 +145,7 @@ def main(yolo):
                 if udp_flag:
                     sock.sendto(message.encode('utf-8'), (address, PORT))
             if car_data:
-                sd.send_amqp(sd.create_jsondata(cam_ip, nowtime, time.time() - t1, car_data, args.jsonfile, args.json_path, i), args.key, args.AMQPHost)
+                sd.send_amqp(sd.create_jsondata(cam_ip, nowtime, time.time() - t1, car_data, args.jsonfile, args.json_path, i), key, args.AMQPHost)
                 i += 1
 
 
@@ -203,10 +206,13 @@ if __name__ == '__main__':
     parser.add_argument("-jsonfile", action = 'store_true')
     parser.add_argument("-udp_flag", action = 'store_true')
     parser.add_argument("-skip", action = 'store_false')
+
+    parser.add_argument("--ipaddress", default='192.168.25.51', type=str)
     parser.add_argument("--AMQPHost", default = 'localhost', type=str)
-    parser.add_argument("--key", default = 'jp.chiba.kashiwa.kashiwanoha.25.sensor.1', type=str)
+    parser.add_argument("--key", default = 'jp.chiba.kashiwa.kashiwanoha.25.sensor.', type=str)
     
-    parser.add_argument("--cam_ip", default="rtsp://camera:Camera123@192.168.10.51/mediainput/h264", type=str)
+    parser.add_argument("--cam_ip", default="rtsp://camera:Camera123@192.168.10.6", type=str)
+    parser.add_argument("--cam_cmd", default="/mediainput/h264", type=str)
     parser.add_argument("--videofile", default="/home/aj1m0n/MOT/data/C0133-480p.mp4", type=str)
     parser.add_argument("--json_path", default='/home/aj1m0n/MOT/data/json/', type=str)
     args = parser.parse_args()

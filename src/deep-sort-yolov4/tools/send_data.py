@@ -27,6 +27,12 @@ def send_amqp(_json_data, _key, _host):
     _channel.basic_publish(exchange='signal',routing_key=_key, body=_json_command)
     print("Sent: {} Routing Key: {}".format(_json_command, _key))
 
+def set_address(_jetson_address, _camera_address, _camera_cmd, _key):
+    print(_jetson_address)
+    _camera_address = _camera_address + _jetson_address[-1] + _camera_cmd
+    _key = _key + _jetson_address[-1]
+    return _camera_address, _key
+
 if __name__ == "__main__":
     import datetime
     nowtime = datetime.datetime.now().isoformat()
