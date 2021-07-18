@@ -1,7 +1,9 @@
 FROM aj1m0n/deep_sort:latest
 
-WORKDIR /workspace
+VOLUME ./:/Deep_Sort
+
+WORKDIR /Deep_Sort/src/deep-sort-yolov4/
 
 RUN pip3 install pika
 
-CMD  ["bash", "/workspace/Deep_Sort/run.sh"]
+CMD  ["bash", "./run.sh"]
