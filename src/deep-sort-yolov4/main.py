@@ -114,7 +114,10 @@ def main(yolo):
         #     print('save data') 
         #     cv2.imwrite("/workspace/images/image.png", frame)
         #     savetime = time.time()
-        image = Image.fromarray(frame[...,::-1])  # bgr to rgb
+        try:
+            image = Image.fromarray(frame[...,::-1])  # bgr to rgb
+        except TypeError:
+            continue
         boxes, confidence, classes = yolo.detect_image(image)
 
         if tracking:
