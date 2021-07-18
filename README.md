@@ -66,15 +66,22 @@ exit
 ```
 
 ### Run docker
-make workspce directory.
+Sort with IP Camera.
+
+1.
 ```
 mkdir ~/workspace/
 ```
-run docker image with webcamera(/dev/video0).
-If you do not want to use webcamera, delete --device /dev/video0:/dev/video0.
+2.
 ```
-docker run -it -v ~/workspace/:/workspace/ --device /dev/video0:/dev/video0 --runtime nvidia --network host aj1m0n/deep_sort:latest
+docker image build -t deepsort .
 ```
+3.
+```
+./dockerrun.sh
+```
+
+### 
 
 ### Convert keras format
 convert the Darknet YOLO v4 model  to a Keras model by modifying `convert.py` accordingly and run:
@@ -90,6 +97,7 @@ python3 main.py
 By default, tracking and video writing is on and asynchronous processing is off.
 Parser example:
 ```
+parser = argparse.ArgumentParser()
 parser.add_argument("-tracking", action = 'store_false')
 parser.add_argument("-writeVideo_flag", action = 'store_true')
 parser.add_argument("-asyncVideo_flag", action = 'store_true')
@@ -98,10 +106,13 @@ parser.add_argument("-ipcamera_flag", action = 'store_true')
 parser.add_argument("-jsonfile", action = 'store_true')
 parser.add_argument("-udp_flag", action = 'store_true')
 parser.add_argument("-skip", action = 'store_false')
-parser.add_argument("--AMQPHost", default = 'localhost', type=str)
-parser.add_argument("--key", default = 'jp.chiba.kashiwa.kashiwanoha.25.sensor.1', type=str)
 
-parser.add_argument("--cam_ip", default="rtsp://camera:Camera123@192.168.10.51/ONVIF/MediaInput/h264", type=str)
+parser.add_argument("--ipaddress", default='192.168.25.51', type=str)
+parser.add_argument("--AMQPHost", default = 'localhost', type=str)
+parser.add_argument("--key", default = 'jp.chiba.kashiwa.kashiwanoha.25.sensor.', type=str)
+
+parser.add_argument("--cam_ip", default="rtsp://camera:Camera123@192.168.25.6", type=str)
+parser.add_argument("--cam_cmd", default="/mediainput/h264", type=str)
 parser.add_argument("--videofile", default="/home/aj1m0n/MOT/data/C0133-480p.mp4", type=str)
 parser.add_argument("--json_path", default='/home/aj1m0n/MOT/data/json/', type=str)
 ```
