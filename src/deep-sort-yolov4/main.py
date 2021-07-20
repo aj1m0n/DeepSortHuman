@@ -113,6 +113,7 @@ def main(yolo):
         try:
             image = Image.fromarray(frame[...,::-1])  # bgr to rgb
         except TypeError:
+            video_capture = cv2.VideoCapture(full_cam_addr)
             continue
         boxes, confidence, classes = yolo.detect_image(image)
 
@@ -211,7 +212,7 @@ if __name__ == '__main__':
     parser.add_argument("--key", default = 'jp.chiba.kashiwa.kashiwanoha.25.sensor.', type=str)
     
     parser.add_argument("--cam_ip", default="rtsp://camera:Camera123@192.168.25.6", type=str)
-    parser.add_argument("--cam_cmd", default="/mediainput/h265", type=str)
+    parser.add_argument("--cam_cmd", default="/mediainput/h265?tcp", type=str)
     parser.add_argument("--videofile", default="/home/aj1m0n/MOT/data/C0133-480p.mp4", type=str)
     parser.add_argument("--json_path", default='/home/aj1m0n/MOT/data/json/', type=str)
     args = parser.parse_args()
