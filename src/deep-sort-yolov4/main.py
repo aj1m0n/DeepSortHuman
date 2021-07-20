@@ -65,7 +65,7 @@ def main(yolo):
     elif ipcamera_flag :
         print("load ipcamera")
         video_capture = cv2.VideoCapture(full_cam_addr)
-        # video_capture.set(cv2.CAP_PROP_FOURCC, cv2.VideoWriter_fourcc('M','J','P','G'))
+        video_capture.set(cv2.CAP_PROP_FOURCC, cv2.VideoWriter_fourcc('M','J','P','G'))
         width = video_capture.get(cv2.CAP_PROP_FRAME_WIDTH)
         height = video_capture.get(cv2.CAP_PROP_FRAME_HEIGHT)
         fps = video_capture.get(cv2.CAP_PROP_FPS)
@@ -99,7 +99,7 @@ def main(yolo):
         sock.bind((HOST, PORT))
         
     fps = 0.0
-    fps_imutils = imutils.video.FPS().start()
+    fps_goimutils = imutils.video.FPS().start()
     
     i = 0
 
@@ -110,10 +110,6 @@ def main(yolo):
         ret, frame = video_capture.read()  # frame shape 640*480*3
         t1 = time.time()
           
-        # if time.time() - savetime >= 30: 
-        #     print('save data') 
-        #     cv2.imwrite("/workspace/images/image.png", frame)
-        #     savetime = time.time()
         try:
             image = Image.fromarray(frame[...,::-1])  # bgr to rgb
         except TypeError:
