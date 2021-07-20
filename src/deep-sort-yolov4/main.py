@@ -144,9 +144,8 @@ def main(yolo):
                 car_data[str(track.track_id)] = [int(bbox[0]), int(bbox[1]), int(bbox[2]), int(bbox[3])]
                 if udp_flag:
                     sock.sendto(message.encode('utf-8'), (address, PORT))
-            if car_data:
-                sd.send_amqp(sd.create_jsondata(cam_ip, nowtime, time.time() - t1, car_data, args.jsonfile, args.json_path, i), key, args.AMQPHost)
-                i += 1
+            sd.send_amqp(sd.create_jsondata(cam_ip, nowtime, time.time() - t1, car_data, args.jsonfile, args.json_path, i), key, args.AMQPHost)
+            i += 1
 
 
         for det in detections:
