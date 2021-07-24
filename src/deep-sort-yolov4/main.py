@@ -124,7 +124,6 @@ def main(yolo):
             video_capture = cv2.VideoCapture(full_cam_addr)
             continue
         image = Image.composite(maskbgi, image, mask)
-        image.save('./test.png')
         boxes, confidence, classes = yolo.detect_image(image)
 
         if tracking:
