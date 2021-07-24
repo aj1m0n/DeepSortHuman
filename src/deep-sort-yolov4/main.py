@@ -21,6 +21,7 @@ import imutils.video
 from videocaptureasync import VideoCaptureAsync
 
 import datetime
+from pytz import timezone
 
 from socket import *
 
@@ -108,7 +109,7 @@ def main(yolo):
         mask = Image.open(args.maskdir + 'mask' + args.ipaddress[-1] + '.png').convert("L")
 
     while True:
-        nowtime = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S.%f')
+        nowtime = datetime.datetime.now(timezone('Asia/Tokyo')).strftime('%Y-%m-%d %H:%M:%S.%f')
         ret, frame = video_capture.read()  # frame shape 640*480*3
         t1 = time.time()
           
