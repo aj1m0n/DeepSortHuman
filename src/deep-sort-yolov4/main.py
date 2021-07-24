@@ -118,6 +118,7 @@ def main(yolo):
         ret, frame = video_capture.read()  # frame shape 640*480*3
         if not ret:
             print('cant read')
+            video_capture = cv2.VideoCapture(full_cam_addr)
             continue
 
         t1 = time.time()
