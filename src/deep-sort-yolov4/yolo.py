@@ -32,7 +32,6 @@ class YOLO(object):
         self.model_image_size = (416, 416)  # fixed size or (None, None)
         self.is_fixed_size = self.model_image_size != (None, None)
         self.boxes, self.scores, self.classes = self.generate()
-        self.maskbgi = Image.new('RGB', (1280, 720), (0,0,0))
 
     def _get_class(self):
         classes_path = os.path.expanduser(self.classes_path)
@@ -77,8 +76,7 @@ class YOLO(object):
                 score_threshold=self.score, iou_threshold=self.iou)
         return boxes, scores, classes
 
-    def detect_image(self, image, mask):
-        image = Image.composite(self.maskbgi, image, mask)
+    def detect_image(self, image):
         if self.is_fixed_size:
             assert self.model_image_size[0]%32 == 0, 'Multiples of 32 required'
             assert self.model_image_size[1]%32 == 0, 'Multiples of 32 required'
