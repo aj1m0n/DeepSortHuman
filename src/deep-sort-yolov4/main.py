@@ -74,7 +74,7 @@ def main(yolo):
         width = video_capture.get(cv2.CAP_PROP_FRAME_WIDTH)
         height = video_capture.get(cv2.CAP_PROP_FRAME_HEIGHT)
         rfps = video_capture.get(cv2.CAP_PROP_FPS)
-        print("fps:{}width:{}height:{}".format(fps, width, height))
+        print("fps:{}width:{}height:{}".format(rfps, width, height))
     elif webcamera_flag :
         print("load webcamera")
         video_capture = cv2.VideoCapture(0)
