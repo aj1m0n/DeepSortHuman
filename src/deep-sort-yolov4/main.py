@@ -116,6 +116,10 @@ def main(yolo):
     while True:
         nowtime = datetime.datetime.now(timezone('Asia/Tokyo')).strftime('%Y-%m-%d %H:%M:%S.%f')
         ret, frame = video_capture.read()  # frame shape 640*480*3
+        if not ret:
+            print('cant read')
+            continue
+
         t1 = time.time()
           
         try:
