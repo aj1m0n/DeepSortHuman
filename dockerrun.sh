@@ -1,1 +1,1 @@
-docker run -it -v ~/workspace/Deep_Sort/:/Deep_Sort/ -v /mnt/usbdisk1:/json/ -e IP=`ip -f inet -o addr show eth0|cut -d\  -f 7 | cut -d/ -f 1` --restart=always --runtime nvidia --network host --name deepsort deepsort
+docker run -it -v ~/workspace/Deep_Sort/:/Deep_Sort/ -v /mnt/usbdisk1/:/json/ -e IP=`ip -f inet -o addr show eth0|cut -d\  -f 7 | cut -d/ -f 1` --restart=always --runtime nvidia --network host --name deepsort deepsort

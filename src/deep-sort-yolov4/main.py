@@ -104,7 +104,9 @@ def main(yolo):
     i = 0
 
     savetime = 0
-    
+    if not args.maskoff:
+        mask = Image.open(args.maskdir + 'mask' + args.ipaddress[-1] + '.png').convert("L")
+
     while True:
         nowtime = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S.%f')
         ret, frame = video_capture.read()  # frame shape 640*480*3
@@ -115,7 +117,7 @@ def main(yolo):
         except TypeError:
             video_capture = cv2.VideoCapture(full_cam_addr)
             continue
-        boxes, confidence, classes = yolo.detect_image(image)
+        boxes, confidence, classes = yolo.detect_image(image, mask)
 
         if tracking:
             features = encoder(frame, boxes)
@@ -205,6 +207,7 @@ if __name__ == '__main__':
     parser.add_argument("-jsonfile", action = 'store_true')
     parser.add_argument("-udp_flag", action = 'store_true')
     parser.add_argument("-skip", action = 'store_false')
+    parser.add_argument("-maskoff", action="store_true")
 
     parser.add_argument("--ipaddress", default='192.168.25.51', type=str)
     parser.add_argument("--AMQPHost", default = 'localhost', type=str)
@@ -214,5 +217,6 @@ if __name__ == '__main__':
     parser.add_argument("--cam_cmd", default="/mediainput/h265?tcp", type=str)
     parser.add_argument("--videofile", default="/home/aj1m0n/MOT/data/C0133-480p.mp4", type=str)
     parser.add_argument("--json_path", default='/home/aj1m0n/MOT/data/json/', type=str)
+    parser.add_argument("--maskdir", default='../../mask/', type=str)
     args = parser.parse_args()
     main(YOLO())
