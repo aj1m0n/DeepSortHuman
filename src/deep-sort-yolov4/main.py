@@ -70,7 +70,7 @@ def main(yolo):
     elif ipcamera_flag :
         print("load ipcamera")
         video_capture = cv2.VideoCapture(full_cam_addr)
-        # video_capture.set(cv2.CAP_PROP_FOURCC, cv2.VideoWriter_fourcc('M','J','P','G'))
+        #video_capture.set(cv2.CAP_PROP_FOURCC, cv2.VideoWriter_fourcc('M','J','P','G'))
         width = video_capture.get(cv2.CAP_PROP_FRAME_WIDTH)
         height = video_capture.get(cv2.CAP_PROP_FRAME_HEIGHT)
         rfps = video_capture.get(cv2.CAP_PROP_FPS)
@@ -104,7 +104,6 @@ def main(yolo):
         sock.bind((HOST, PORT))
         
     fps = 0.0
-    fps_imutils = imutils.video.FPS().start()
     
     i = 0
 
@@ -161,32 +160,10 @@ def main(yolo):
             sd.send_amqp(sd.create_jsondata(cam_ip, nowtime, time.time() - t1, car_data, args.jsonfile, args.json_path, i), key, args.AMQPHost)
             i += 1
 
-
-        for det in detections:
-            bbox = det.to_tlbr()
-            score = "%.2f" % round(det.confidence * 100, 2) + "%"
-            cv2.rectangle(frame, (int(bbox[0]), int(bbox[1])), (int(bbox[2]), int(bbox[3])), (255, 0, 0), 2)
-            if len(classes) > 0:
-                cls = det.cls
-                cv2.putText(frame, str(cls) + " " + score, (int(bbox[0]), int(bbox[3])), 0,
-                            1.5e-3 * frame.shape[0], (0, 255, 0), 1)
-
-        #cv2.imshow('', frame)
-
-        if writeVideo_flag: # and not asyncVideo_flag:
-            # save a frame
-            out.write(frame)
-            frame_index = frame_index + 1
-
-        fps_imutils.update()
-
         if not asyncVideo_flag:
             fps = (fps + (1./(time.time()-t1))) / 2
             print("FPS = %f"%(fps))
         
-        # Press Q to stop!
-        if cv2.waitKey(1) & 0xFF == ord('q'):
-            break
         
         ### 読み飛ばし処理を追加 ###
         if not args.jsonfile and args.skip:
@@ -194,9 +171,6 @@ def main(yolo):
                 for _i in range (int(math.ceil(rfps/fps)) - 1) :
                     ret, frame = video_capture.read()
             
-
-    fps_imutils.stop()
-    print('imutils FPS: {}'.format(fps_imutils.fps()))
 
     if asyncVideo_flag:
         video_capture.stop()
