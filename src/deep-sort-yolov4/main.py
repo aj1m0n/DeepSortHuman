@@ -39,6 +39,10 @@ def main(yolo):
     max_cosine_distance = 0.3
     nn_budget = None
     nms_max_overlap = 1.0
+
+    width=1280
+    height=720
+    rfps=10
     
     # Deep SORT
     model_filename = 'model_data/mars-small128.pb'
@@ -69,7 +73,7 @@ def main(yolo):
         # video_capture.set(cv2.CAP_PROP_FOURCC, cv2.VideoWriter_fourcc('M','J','P','G'))
         width = video_capture.get(cv2.CAP_PROP_FRAME_WIDTH)
         height = video_capture.get(cv2.CAP_PROP_FRAME_HEIGHT)
-        fps = video_capture.get(cv2.CAP_PROP_FPS)
+        rfps = video_capture.get(cv2.CAP_PROP_FPS)
         print("fps:{}width:{}height:{}".format(fps, width, height))
     elif webcamera_flag :
         print("load webcamera")
@@ -106,7 +110,8 @@ def main(yolo):
 
     savetime = 0
     if not args.maskoff:
-        mask = Image.open(args.maskdir + 'mask' + args.ipaddress[-1] + '.png').convert("L")
+        maskbgi = Image.new('RGB',(int(width), int(height)) , (0,0,0))
+        mask = Image.open(args.maskdir + 'mask' + args.ipaddress[-1] + '.png').convert("L").resize(size=(int(width), int(height)), resample=Image.NEAREST)
 
     while True:
         nowtime = datetime.datetime.now(timezone('Asia/Tokyo')).strftime('%Y-%m-%d %H:%M:%S.%f')
@@ -118,7 +123,9 @@ def main(yolo):
         except TypeError:
             video_capture = cv2.VideoCapture(full_cam_addr)
             continue
-        boxes, confidence, classes = yolo.detect_image(image, mask)
+        image = Image.composite(maskbgi, image, mask)
+        image.save('./test.png')
+        boxes, confidence, classes = yolo.detect_image(image)
 
         if tracking:
             features = encoder(frame, boxes)
@@ -180,7 +187,7 @@ def main(yolo):
         ### 読み飛ばし処理を追加 ###
         if not args.jsonfile and args.skip:
             if fps <=10:
-                for _i in range (int(math.ceil(10/fps)) - 1) :
+                for _i in range (int(math.ceil(rfps/fps)) - 1) :
                     ret, frame = video_capture.read()
             
 
