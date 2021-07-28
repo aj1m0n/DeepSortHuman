@@ -17,7 +17,6 @@ from deep_sort.detection_yolo import Detection_YOLO
 from deep_sort.tracker import Tracker
 from tools import generate_detections as gdet
 from tools import send_data as sd
-import imutils.video
 from videocaptureasync import VideoCaptureAsync
 
 import datetime
@@ -184,7 +183,7 @@ def main(yolo):
     cv2.destroyAllWindows()
 
 if __name__ == '__main__':
-    print('ver1.2')
+    print('ver2.0')
     parser = argparse.ArgumentParser()
     parser.add_argument("-tracking", action = 'store_false')
     parser.add_argument("-writeVideo_flag", action = 'store_true')
