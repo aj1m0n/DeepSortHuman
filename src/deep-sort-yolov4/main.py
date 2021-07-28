@@ -200,7 +200,7 @@ if __name__ == '__main__':
     parser.add_argument("--key", default = 'jp.chiba.kashiwa.kashiwanoha.25.sensor.', type=str)
     
     parser.add_argument("--cam_ip", default="rtsp://camera:Camera123@192.168.25.6", type=str)
-    parser.add_argument("--cam_cmd", default="/mediainput/h265?tcp", type=str)
+    parser.add_argument("--cam_cmd", default="/mediainput/h264?tcp", type=str)
     parser.add_argument("--videofile", default="/home/aj1m0n/MOT/data/C0133-480p.mp4", type=str)
     parser.add_argument("--json_path", default='/home/aj1m0n/MOT/data/json/', type=str)
     parser.add_argument("--maskdir", default='../../mask/', type=str)
