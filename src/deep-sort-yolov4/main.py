@@ -72,7 +72,7 @@ def main(yolo):
     if asyncVideo_flag :
         print("load videofile")
         video_capture = VideoCaptureAsync(args.videofile)
-    elif ipcamera_flag :
+    elif ipcamera_flag or args.jpegmode :
         print("load ipcamera")
         video_capture = cv2.VideoCapture(full_cam_addr)
         # width = video_capture.get(cv2.CAP_PROP_FRAME_WIDTH)
