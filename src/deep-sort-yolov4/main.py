@@ -114,19 +114,27 @@ def main(yolo):
 
     while True:
         nowtime = datetime.datetime.now(timezone('Asia/Tokyo')).strftime('%Y-%m-%d %H:%M:%S.%f')
-        ret, frame = video_capture.read()  # frame shape 640*480*3
-        if not ret:
-            print('cant read')
-            video_capture = cv2.VideoCapture(full_cam_addr)
-            continue
+        if not args.jpegmode:
+            ret, frame = video_capture.read()  # frame shape 640*480*3
+            
+            if not ret:
+                print('cant read')
+                video_capture = cv2.VideoCapture(full_cam_addr)
+                continue
+            t1 = time.time()            
+            try:
+                image = Image.fromarray(frame[...,::-1])  # bgr to rgb
+            except TypeError:
+                video_capture = cv2.VideoCapture(full_cam_addr)
+                continue
+        else:
+            res = requests.get('http://192.168.25.61/SnapshotJPEG')
+            image = None
+            with tempfile.NamedTemporaryFile(dir='./') as fp:
+                fp.write(res.content)
+                fp.file.seek(0)
+                imgage = cv2.imread(fp.name)
 
-        t1 = time.time()
-          
-        try:
-            image = Image.fromarray(frame[...,::-1])  # bgr to rgb
-        except TypeError:
-            video_capture = cv2.VideoCapture(full_cam_addr)
-            continue
         image = Image.composite(maskbgi, image, mask)
         boxes, confidence, classes = yolo.detect_image(image)
 
@@ -194,6 +202,7 @@ if __name__ == '__main__':
     parser.add_argument("-udp_flag", action = 'store_true')
     parser.add_argument("-skip", action = 'store_false')
     parser.add_argument("-maskoff", action="store_true")
+    parser.add_argument("-jpegmode", action = 'store_true')
 
     parser.add_argument("--ipaddress", default='192.168.25.51', type=str)
     parser.add_argument("--AMQPHost", default = 'localhost', type=str)
