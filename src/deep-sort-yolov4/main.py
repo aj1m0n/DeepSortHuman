@@ -59,10 +59,11 @@ def main(yolo):
     udp_flag = args.udp_flag
 
     full_cam_addr, key = sd.set_address(args.ipaddress, args.cam_ip, args.cam_cmd, args.key)
+    cam_ip = full_cam_addr.replace(args.cam_cmd, "").replace("rtsp://camera:Camera123@", "") 
     if args.jpegmode:
-        cam_ip = full_cam_addr.replace(args.cam_cmd, "").replace("http://camera:Camera123@", "") 
-    else:
-        cam_ip = full_cam_addr.replace(args.cam_cmd, "").replace("rtsp://camera:Camera123@", "")
+        full_cam_addr = full_cam_addr.replace("rtsp", "http")
+
+    
 
     print(full_cam_addr)
     print(key)
