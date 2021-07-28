@@ -70,10 +70,9 @@ def main(yolo):
     elif ipcamera_flag :
         print("load ipcamera")
         video_capture = cv2.VideoCapture(full_cam_addr)
-        #video_capture.set(cv2.CAP_PROP_FOURCC, cv2.VideoWriter_fourcc('M','J','P','G'))
-        width = video_capture.get(cv2.CAP_PROP_FRAME_WIDTH)
-        height = video_capture.get(cv2.CAP_PROP_FRAME_HEIGHT)
-        rfps = video_capture.get(cv2.CAP_PROP_FPS)
+        # width = video_capture.get(cv2.CAP_PROP_FRAME_WIDTH)
+        # height = video_capture.get(cv2.CAP_PROP_FRAME_HEIGHT)
+        # rfps = video_capture.get(cv2.CAP_PROP_FPS)
         print("fps:{}width:{}height:{}".format(rfps, width, height))
     elif webcamera_flag :
         print("load webcamera")
@@ -107,7 +106,6 @@ def main(yolo):
     
     i = 0
 
-    savetime = 0
     if not args.maskoff:
         maskbgi = Image.new('RGB',(int(width), int(height)) , (0,0,0))
         mask = Image.open(args.maskdir + 'mask' + args.ipaddress[-1] + '.png').convert("L").resize(size=(int(width), int(height)), resample=Image.NEAREST)
@@ -155,8 +153,6 @@ def main(yolo):
                     continue
                 bbox = track.to_tlbr()
                 car_data[str(track.track_id)] = [int(bbox[0]), int(bbox[1]), int(bbox[2]), int(bbox[3])]
-                if udp_flag:
-                    sock.sendto(message.encode('utf-8'), (address, PORT))
             sd.send_amqp(sd.create_jsondata(cam_ip, nowtime, time.time() - t1, car_data, args.jsonfile, args.json_path, i), key, args.AMQPHost)
             i += 1
 
