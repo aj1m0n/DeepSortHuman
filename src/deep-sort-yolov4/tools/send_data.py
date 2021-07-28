@@ -20,12 +20,15 @@ def create_dummy_data(_data, _path, _i):
     return True
 
 def send_amqp(_json_data, _key, _host):
-    _connection = pika.BlockingConnection(pika.ConnectionParameters(host=_host))
-    _channel = _connection.channel()
-    _channel.exchange_declare(exchange='signal', exchange_type='topic')
-    _json_command = str(_json_data)
-    _channel.basic_publish(exchange='signal',routing_key=_key, body=_json_command)
-    print("Sent: {} Routing Key: {}".format(_json_command, _key))
+    try:
+        _connection = pika.BlockingConnection(pika.ConnectionParameters(host=_host))
+        _channel = _connection.channel()
+        _channel.exchange_declare(exchange='signal', exchange_type='topic')
+        _json_command = str(_json_data)
+        _channel.basic_publish(exchange='signal',routing_key=_key, body=_json_command)
+        print("Sent: {} Routing Key: {}".format(_json_command, _key))
+    except pika.exceptions.AMQPConnectionError:
+        print("AMQP DOWN")
 
 def set_address(_jetson_address, _camera_address, _camera_cmd, _key):
     print(_jetson_address)
