@@ -136,7 +136,7 @@ def main(yolo):
             with tempfile.NamedTemporaryFile(dir='./') as fp:
                 fp.write(res.content)
                 fp.file.seek(0)
-                image = Image.fromarray(cv2.imread(fp.name))
+                image = Image.fromarray(cv2.imread(fp.name)[...,::-1])
 
         image = Image.composite(maskbgi, image, mask)
         boxes, confidence, classes = yolo.detect_image(image)
