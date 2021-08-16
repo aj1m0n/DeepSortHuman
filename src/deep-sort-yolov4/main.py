@@ -17,6 +17,7 @@ from deep_sort.detection_yolo import Detection_YOLO
 from deep_sort.tracker import Tracker
 from tools import generate_detections as gdet
 from tools import send_data as sd
+from tools.counter_parson import CountParson
 from videocaptureasync import VideoCaptureAsync
 
 import datetime
@@ -41,7 +42,7 @@ def main(yolo):
 
     width=1280
     height=720
-    rfps=10
+    rfps=30
     
     # Deep SORT
     model_filename = 'model_data/mars-small128.pb'
@@ -66,7 +67,7 @@ def main(yolo):
 
     print(full_cam_addr)
     print(key)
-
+    counter_parson = CountParson()
   
     if asyncVideo_flag :
         print("load videofile")
@@ -117,9 +118,10 @@ def main(yolo):
     while True:
         nowtime = datetime.datetime.now(timezone('Asia/Tokyo')).strftime('%Y-%m-%d %H:%M:%S.%f')
         ret, frame = video_capture.read()  # frame shape 640*480*3
+        print('first')
         if not ret:
             print('cant read')
-            video_capture = cv2.VideoCapture(full_cam_addr)
+            video_capture = cv2.VideoCapture(0)
             continue
 
         t1 = time.time()
@@ -127,9 +129,10 @@ def main(yolo):
         try:
             image = Image.fromarray(frame[...,::-1])  # bgr to rgb
         except TypeError:
-            video_capture = cv2.VideoCapture(full_cam_addr)
+            video_capture = cv2.VideoCapture(0)
+            print('err')
             continue
-        image = Image.composite(maskbgi, image, mask)
+        # image = Image.composite(maskbgi, image, mask)
         boxes, confidence, classes = yolo.detect_image(image)
 
         if tracking:
@@ -146,7 +149,9 @@ def main(yolo):
         scores = np.array([d.confidence for d in detections])
         indices = preprocessing.non_max_suppression(boxes, nms_max_overlap, scores)
         detections = [detections[i] for i in indices]
-        car_data = {}
+        parson_data = {}
+        track_id_list = []
+        i = 0
         if tracking:
             # Call the tracker
             tracker.predict()
@@ -156,9 +161,11 @@ def main(yolo):
                 if not track.is_confirmed() or track.time_since_update > 1:
                     continue
                 bbox = track.to_tlbr()
-                car_data[str(track.track_id)] = [int(bbox[0]), int(bbox[1]), int(bbox[2]), int(bbox[3])]
-            sd.send_amqp(sd.create_jsondata(cam_ip, nowtime, time.time() - t1, car_data, args.jsonfile, args.json_path, i), key, args.AMQPHost)
-            i += 1
+                parson_data[str(track.track_id)] = [int(bbox[0]), int(bbox[1]), int(bbox[2]), int(bbox[3])]
+                i = track.track_id
+            # sd.send_amqp(sd.create_jsondata(cam_ip, nowtime, time.time() - t1, car_data, args.jsonfile, args.json_path, i), key, args.AMQPHost)
+            t_count, f_count = counter_parson.positions(parson_data, i)
+            print(t_count, f_count)
 
         if not asyncVideo_flag:
             fps = (fps + (1./(time.time()-t1))) / 2
@@ -166,10 +173,10 @@ def main(yolo):
         
         
         ### 読み飛ばし処理を追加 ###
-        if not args.jsonfile and args.skip:
-            if fps <=10:
-                for _i in range (int(math.ceil(rfps/fps)) - 1) :
-                    ret, frame = video_capture.read()
+        # if not args.jsonfile and args.skip:
+        #     if fps <=30:
+        #         for _i in range (int(math.ceil(rfps/fps)) - 1) :
+        #             ret, frame = video_capture.read()
             
 
     if asyncVideo_flag:

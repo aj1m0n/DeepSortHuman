@@ -1,7 +1,6 @@
 import json
 import collections as cl
 from timeit import time
-import pika
 
 def create_jsondata(_camera_ip, _date, _dt, _car_data, _create_json_flag, _json_path, _i):
     _data = {}

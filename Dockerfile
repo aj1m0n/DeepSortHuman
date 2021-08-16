@@ -1,8 +1,8 @@
 FROM aj1m0n/deep_sort:latest
 
-VOLUME ./:/Deep_Sort
+VOLUME ./:/DeepSortHuman
 
-WORKDIR /Deep_Sort/src/deep-sort-yolov4/
+WORKDIR /DeepSortHuman/src/deep-sort-yolov4/
 
 RUN pip3 install pika
 
