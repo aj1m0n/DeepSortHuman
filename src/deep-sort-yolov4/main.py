@@ -29,6 +29,8 @@ import argparse
 
 import math
 
+import os
+
 warnings.filterwarnings('ignore')
 
 
@@ -118,7 +120,6 @@ def main(yolo):
     while True:
         nowtime = datetime.datetime.now(timezone('Asia/Tokyo')).strftime('%Y-%m-%d %H:%M:%S.%f')
         ret, frame = video_capture.read()  # frame shape 640*480*3
-        print('first')
         if not ret:
             print('cant read')
             video_capture = cv2.VideoCapture(0)
@@ -162,8 +163,11 @@ def main(yolo):
                     continue
                 bbox = track.to_tlbr()
                 parson_data[str(track.track_id)] = [int(bbox[0]), int(bbox[1]), int(bbox[2]), int(bbox[3])]
+                if not os.path.exists("./images/" + str(track.track_id) + ".jpg"):
+                    image.crop((int(bbox[0]), int(bbox[1]), int(bbox[2]), int(bbox[3]))).save("./images/" + str(track.track_id) + ".jpg", quality=95)
                 i = track.track_id
             # sd.send_amqp(sd.create_jsondata(cam_ip, nowtime, time.time() - t1, car_data, args.jsonfile, args.json_path, i), key, args.AMQPHost)
+            
             t_count, f_count = counter_parson.positions(parson_data, i, nowtime)
             # print(t_count, f_count)
 
