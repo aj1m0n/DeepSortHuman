@@ -164,12 +164,12 @@ def main(yolo):
                 parson_data[str(track.track_id)] = [int(bbox[0]), int(bbox[1]), int(bbox[2]), int(bbox[3])]
                 i = track.track_id
             # sd.send_amqp(sd.create_jsondata(cam_ip, nowtime, time.time() - t1, car_data, args.jsonfile, args.json_path, i), key, args.AMQPHost)
-            t_count, f_count = counter_parson.positions(parson_data, i)
-            print(t_count, f_count)
+            t_count, f_count = counter_parson.positions(parson_data, i, nowtime)
+            # print(t_count, f_count)
 
         if not asyncVideo_flag:
             fps = (fps + (1./(time.time()-t1))) / 2
-            print("FPS = %f"%(fps))
+            # print("FPS = %f"%(fps))
         
         
         ### 読み飛ばし処理を追加 ###
