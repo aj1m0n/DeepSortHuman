@@ -166,17 +166,31 @@ def main(yolo):
                 if not os.path.exists("./images/" + str(track.track_id) + ".jpg"):
                     image.crop((int(bbox[0]), int(bbox[1]), int(bbox[2]), int(bbox[3]))).save("../../../DemoSortServer/data/images/" + str(track.track_id) + ".jpg", quality=95)
                 i = track.track_id
+                cv2.rectangle(frame, (int(bbox[0]), int(bbox[1])), (int(bbox[2]), int(bbox[3])), (255, 255, 255), 2)
+                cv2.putText(frame, "ID: " + str(track.track_id), (int(bbox[0]), int(bbox[1])), 0, 1.5e-3 * frame.shape[0], (0, 255, 0), 1)
             # sd.send_amqp(sd.create_jsondata(cam_ip, nowtime, time.time() - t1, car_data, args.jsonfile, args.json_path, i), key, args.AMQPHost)
             
             t_count, f_count = counter_parson.positions(parson_data, i, nowtime)
             print(t_count, f_count)
+
+        for det in detections:
+            bbox = det.to_tlbr()
+            score = "%.2f" % round(det.confidence * 100, 2) + "%"
+            cv2.rectangle(frame, (int(bbox[0]), int(bbox[1])), (int(bbox[2]), int(bbox[3])), (255, 0, 0), 2)
+            if len(classes) > 0:
+                cls = det.cls
+                cv2.putText(frame, str(cls) + " " + score, (int(bbox[0]), int(bbox[3])), 0,
+                            1.5e-3 * frame.shape[0], (0, 255, 0), 1)
+
+        cv2.imshow('', frame)
 
 
         if not asyncVideo_flag:
             fps = (fps + (1./(time.time()-t1))) / 2
             # print("FPS = %f"%(fps))
         
-        
+        if cv2.waitKey(1) & 0xFF == ord('q'):
+            break
         ### 読み飛ばし処理を追加 ###
         # if not args.jsonfile and args.skip:
         #     if fps <=30:
