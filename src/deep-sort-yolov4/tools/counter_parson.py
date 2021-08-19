@@ -30,6 +30,8 @@ class CountParson:
             for _key in _new_keys_dict:
                 self.first_position_list[_key] = _parson_dict[_key]
         
+        _ftemp = {}
+        _etemp = {}
         for _key in self.end_position_list.keys():
             if not _key in _parson_dict.keys():
                 _fx = int(self.first_position_list[_key][0] + (self.first_position_list[_key][2] - self.first_position_list[_key][0]) / 2)
@@ -51,11 +53,12 @@ class CountParson:
                     print(self.ids_position_dict)
                     self.create_dummy_data(_key)
                     self.ids_position_dict.clear()
-                self.first_position_list = self.first_position_list.pop(_key)
-                self.end_position_list = self.end_position_list.pop(_key)
+                _ftemp = self.first_position_list.pop(_key)
+                _etemp = self.end_position_list.pop(_key)
             else:
-                self.end_position_list[_key] = _parson_dict[_key]
-
+                _etemp = self.end_position_list | _parson_dict[_key]
+        self.first_position_list = _ftemp
+        self.end_position_list = _etemp
         return len(self.t_count_list), len(self.f_count_list)
 
     def create_dummy_data(self, _i):
