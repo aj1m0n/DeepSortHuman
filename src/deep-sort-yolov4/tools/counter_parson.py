@@ -1,12 +1,10 @@
 import json
+import math
 
 class CountParson:
     def __init__(self):
-        self.parson_id_list = []
         self.first_position_list = {}
         self.end_position_list = {}
-        self.first_id_list = []
-        self.count_list = []
         self.t_count_list = []
         self.f_count_list = []
         self.ids_position_dict = {}
@@ -15,34 +13,48 @@ class CountParson:
 
     def positions(self, _parson_dict, _latest_track_id, _date):
         _latest_track_id = int(_latest_track_id)
-
         if len(_parson_dict) == 0:
             return len(self.t_count_list), len(self.f_count_list)
-        if  len(self.first_id_list) == 0:
-            self.first_id_list.append(_latest_track_id)
-            self.first_position_list[_latest_track_id] = _parson_dict[str(_latest_track_id)]
+        if  len(self.first_position_list) == 0:
+            self.first_position_list = _parson_dict
+            
+        _new_keys_dict = _parson_dict.keys() - self.first_position_list.keys()
+        _intersection_keys_dict = _parson_dict.keys() & self.first_position_list.keys()
+        
+        if len(_intersection_keys_dict) > 0:
+            for _key in _intersection_keys_dict:
+                self.end_position_list[_key] = _parson_dict[_key]
+        
+        if  len(_new_keys_dict) > 0:
+            for _key in _new_keys_dict:
+                self.first_position_list[_key] = _parson_dict[_key]
+        
+        for _key in self.end_position_list.keys():
+            if not _key in _parson_dict.key():
+                _fx = int(self.first_position_list[_key][0] + (self.first_position_list[_key][3] - self.first_position_list[_key][0]) / 2)
+                _fy = int(self.first_position_list[_key][2] + (self.first_position_list[_key][4] - self.first_position_list[_key][2]) / 2)
+                _ex = int(self.end_position_list[_key][0] + (self.end_position_list[_key][3] - self.end_position_list[_key][0]) / 2)
+                _ey = int(self.end_position_list[_key][2] + (self.end_position_list[_key][4] - self.end_position_list[_key][2]) / 2)
+                if math.sqrt(pow(_ex -_fx, 2) + pow(_ey - _fy, 2)) > 250:
+                    self.ids_position_dict["id"] = _key
+                    if _ex -_fx > 0:
+                        self.ids_position_dict["direction"] = "L"
+                        self.t_count_list.append(_key)
+                    else:
+                        self.ids_position_dict["direction"] = "R" 
+                        self.f_count_list.append(_key)
 
-        if  not _latest_track_id in self.first_id_list:
-            self.first_id_list.append(_latest_track_id)
-            self.first_position_list[_latest_track_id] = _parson_dict[str(_latest_track_id)]
-
-        for _track_id in self.first_id_list:
-            if not _parson_dict.get(str(_track_id)):
-                if self.first_position_list[_track_id][0] - self.end_position_list[_track_id][0] > 0:
-                    self.t_count_list.append(int(_track_id))
-                    self.ids_position_dict["direction"] = "R"
-                else:
-                    self.f_count_list.append(int(_track_id))
-                    self.ids_position_dict["direction"] = "L"
-                self.ids_position_dict["id"] = _track_id
-                self.ids_position_dict["date"] = _date
-                self.ids_position_dict["1st_position"] = self.first_position_list[_track_id]
-                self.ids_position_dict["end_position"] = self.end_position_list[_track_id]
-                self.create_dummy_data(_track_id)
-                print(self.ids_position_dict)
-                self.first_id_list.remove(_track_id)
+                    self.ids_position_dict["date"] = _date
+                    self.ids_position_dict["1st_position"] = self.first_position_list[_key]
+                    self.ids_position_dict["end_position"] = self.end_position_list[_key]
+                    print(self.ids_position_dict)
+                    self.create_dummy_data(_key)
+                    self.ids_position_dict.clear()
+                self.first_position_list = self.first_position_list.pop(_key)
+                self.end_position_list = self.end_position_list.pop(_key)
             else:
-                self.end_position_list[_track_id] = _parson_dict[str(_track_id)]
+                self.end_position_list[_key] = _parson_dict[_key]
+
         return len(self.t_count_list), len(self.f_count_list)
 
     def create_dummy_data(self, _i):
