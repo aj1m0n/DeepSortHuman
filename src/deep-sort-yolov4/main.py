@@ -163,7 +163,7 @@ def main(yolo):
                     continue
                 bbox = track.to_tlbr()
                 parson_data[str(track.track_id)] = [int(bbox[0]), int(bbox[1]), int(bbox[2]), int(bbox[3])]
-                if not os.path.exists("./images/" + str(track.track_id) + ".jpg"):
+                if not os.path.exists("../../../DemoSortServer/data/images/" + str(track.track_id) + ".jpg"):
                     image.crop((int(bbox[0]), int(bbox[1]), int(bbox[2]), int(bbox[3]))).save("../../../DemoSortServer/data/images/" + str(track.track_id) + ".jpg", quality=95)
                 i = track.track_id
                 cv2.rectangle(frame, (int(bbox[0]), int(bbox[1])), (int(bbox[2]), int(bbox[3])), (255, 255, 255), 2)
