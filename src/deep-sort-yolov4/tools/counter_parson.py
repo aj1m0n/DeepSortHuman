@@ -30,7 +30,7 @@ class CountParson:
                 self.first_position_list[_key] = _parson_dict[_key]
         
         for _key in self.end_position_list.keys():
-            if not _key in _parson_dict.key():
+            if not _key in _parson_dict.keys():
                 _fx = int(self.first_position_list[_key][0] + (self.first_position_list[_key][3] - self.first_position_list[_key][0]) / 2)
                 _fy = int(self.first_position_list[_key][2] + (self.first_position_list[_key][4] - self.first_position_list[_key][2]) / 2)
                 _ex = int(self.end_position_list[_key][0] + (self.end_position_list[_key][3] - self.end_position_list[_key][0]) / 2)
