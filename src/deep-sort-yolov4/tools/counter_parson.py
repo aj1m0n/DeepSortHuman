@@ -22,7 +22,6 @@ class CountParson:
         print(self.first_position_list)   
         _new_keys_dict = _parson_dict.keys() - self.first_position_list.keys()
         _intersection_keys_dict = _parson_dict.keys() & self.first_position_list.keys()
-        print(type(_new_keys_dict))
         if len(_intersection_keys_dict) > 0:
             for _key in _intersection_keys_dict:
                 self.end_position_list[_key] = _parson_dict[_key]
@@ -39,17 +38,14 @@ class CountParson:
                 _fy = int(self.first_position_list[_key][1] + (self.first_position_list[_key][3] - self.first_position_list[_key][1]) / 2)
                 _ex = int(self.end_position_list[_key][0] + (self.end_position_list[_key][2] - self.end_position_list[_key][0]) / 2)
                 _ey = int(self.end_position_list[_key][1] + (self.end_position_list[_key][3] - self.end_position_list[_key][1]) / 2)
-                if math.sqrt(pow(_ex -_fx, 2) + pow(_ey - _fy, 2)) > 250:
+                if math.sqrt(pow(_ex -_fx, 2) + pow(_ey - _fy, 2)) > 150:
                     self.ids_position_dict["id"] = _key
                     if _ex -_fx > 0:
                         self.ids_position_dict["direction"] = "L"
                         self.t_count_list.append(_key)
                     else:
                         self.ids_position_dict["direction"] = "R" 
-                        self.f_count_list.append(_key)
-                    
-                    _ftemp.pop(_key)
-                    _etemp.pop(_key)                    
+                        self.f_count_list.append(_key)               
                     
                     self.ids_position_dict["date"] = _date
                     self.ids_position_dict["1st_position"] = self.first_position_list[_key]
@@ -57,8 +53,8 @@ class CountParson:
                     print(self.ids_position_dict)
                     self.create_dummy_data(_key)
                     self.ids_position_dict.clear()
-                _ftemp = _ftemp.copy()
-                _etemp = _etemp.copy()
+                _ftemp.pop(_key)
+                _etemp.pop(_key)   
             else:
                 _etemp[_key] =  _parson_dict[_key]
         self.first_position_list = _ftemp.copy()
