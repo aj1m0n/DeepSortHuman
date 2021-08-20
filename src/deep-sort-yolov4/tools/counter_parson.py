@@ -39,7 +39,8 @@ class CountParson:
                 _fy = int(self.first_position_list[_key][1] + (self.first_position_list[_key][3] - self.first_position_list[_key][1]) / 2)
                 _ex = int(self.end_position_list[_key][0] + (self.end_position_list[_key][2] - self.end_position_list[_key][0]) / 2)
                 _ey = int(self.end_position_list[_key][1] + (self.end_position_list[_key][3] - self.end_position_list[_key][1]) / 2)
-                if math.sqrt(pow(_ex -_fx, 2) + pow(_ey - _fy, 2)) > 250:
+                print(math.sqrt(pow(_ex -_fx, 2) + pow(_ey - _fy, 2)))
+                if math.sqrt(pow(_ex -_fx, 2) + pow(_ey - _fy, 2)) > 500:
                     self.ids_position_dict["id"] = _key
                     if _ex -_fx > 0:
                         self.ids_position_dict["direction"] = "L"
