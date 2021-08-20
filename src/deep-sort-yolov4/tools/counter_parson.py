@@ -14,6 +14,8 @@ class CountParson:
 
     def positions(self, _parson_dict, _latest_track_id, _date):
         _latest_track_id = int(_latest_track_id)
+        type(_parson_dict)
+        _parson_dict = dict(_parson_dict)
         if len(_parson_dict) == 0 and len(self.first_position_list) == 0:
             return len(self.t_count_list), len(self.f_count_list)
         
