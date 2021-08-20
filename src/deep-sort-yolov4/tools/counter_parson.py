@@ -14,17 +14,17 @@ class CountParson:
 
     def positions(self, _parson_dict, _latest_track_id, _date):
         _latest_track_id = int(_latest_track_id)
-        type(_parson_dict)
+        print(type(_parson_dict))
         _parson_dict = dict(_parson_dict)
         if len(_parson_dict) == 0 and len(self.first_position_list) == 0:
             return len(self.t_count_list), len(self.f_count_list)
         
         if  len(self.first_position_list) == 0:
-            self.first_position_list = _parson_dict
+            self.first_position_list = copy.copy(_parson_dict)
             
         _new_keys_dict = _parson_dict.keys() - self.first_position_list.keys()
         _intersection_keys_dict = _parson_dict.keys() & self.first_position_list.keys()
-        
+        print(type(_new_keys_dict))
         if len(_intersection_keys_dict) > 0:
             for _key in _intersection_keys_dict:
                 self.end_position_list[_key] = _parson_dict[_key]
