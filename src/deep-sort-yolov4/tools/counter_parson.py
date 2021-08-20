@@ -58,8 +58,8 @@ class CountParson:
                 _etemp = copy.copy(_etemp.pop(_key))
             else:
                 _etemp[_key] =  _parson_dict[_key]
-        self.first_position_list = _ftemp
-        self.end_position_list = _etemp
+        self.first_position_list = copy.copy(_ftemp)
+        self.end_position_list = copy.copy(_etemp)
         return len(self.t_count_list), len(self.f_count_list)
 
     def create_dummy_data(self, _i):
