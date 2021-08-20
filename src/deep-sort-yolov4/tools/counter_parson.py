@@ -13,12 +13,11 @@ class CountParson:
         
 
     def positions(self, _parson_dict, _latest_track_id, _date):
-        _latest_track_id = int(_latest_track_id)
         _parson_dict = dict(_parson_dict)
         if len(_parson_dict) == 0 and len(self.first_position_list) == 0:
             return len(self.t_count_list), len(self.f_count_list)
         
-        if  len(self.first_position_list) == 0:
+        if len(self.first_position_list) == 0:
             self.first_position_list = copy.copy(_parson_dict)
         print(self.first_position_list)   
         _new_keys_dict = _parson_dict.keys() - self.first_position_list.keys()
@@ -59,8 +58,9 @@ class CountParson:
                 _etemp = copy.copy(_etemp.pop(_key))
             else:
                 _etemp[_key] =  _parson_dict[_key]
-        self.first_position_list = copy.copy(_ftemp)
-        self.end_position_list = copy.copy(_etemp)
+        self.first_position_list = copy.copy(dict(_ftemp))
+        self.end_position_list = copy.copy(dict(_etemp))
+        print(type(self.first_position_list))
         return len(self.t_count_list), len(self.f_count_list)
 
     def create_dummy_data(self, _i):
