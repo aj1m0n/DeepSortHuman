@@ -18,7 +18,7 @@ class CountParson:
             return len(self.t_count_list), len(self.f_count_list)
         
         if len(self.first_position_list) == 0:
-            self.first_position_list = copy.copy(_parson_dict)
+            self.first_position_list = _parson_dict.copy()
         print(self.first_position_list)   
         _new_keys_dict = _parson_dict.keys() - self.first_position_list.keys()
         _intersection_keys_dict = _parson_dict.keys() & self.first_position_list.keys()
@@ -31,8 +31,8 @@ class CountParson:
             for _key in _new_keys_dict:
                 self.first_position_list[_key] = _parson_dict[_key]
         
-        _ftemp = copy.copy(self.first_position_list)
-        _etemp = copy.copy(self.end_position_list)
+        _ftemp = self.first_position_list.copy()
+        _etemp = self.end_position_list.copy()
         for _key in self.end_position_list.keys():
             if not _key in _parson_dict.keys():
                 _fx = int(self.first_position_list[_key][0] + (self.first_position_list[_key][2] - self.first_position_list[_key][0]) / 2)
@@ -54,12 +54,12 @@ class CountParson:
                     print(self.ids_position_dict)
                     self.create_dummy_data(_key)
                     self.ids_position_dict.clear()
-                _ftemp = copy.copy(_ftemp.pop(_key))
-                _etemp = copy.copy(_etemp.pop(_key))
+                _ftemp = _ftemp.copy()
+                _etemp = _etemp.copy()
             else:
                 _etemp[_key] =  _parson_dict[_key]
-        self.first_position_list = copy.copy(dict(_ftemp))
-        self.end_position_list = copy.copy(dict(_etemp))
+        self.first_position_list = _ftemp.copy()
+        self.end_position_list = _etemp.copy()
         print(type(self.first_position_list))
         return len(self.t_count_list), len(self.f_count_list)
 
