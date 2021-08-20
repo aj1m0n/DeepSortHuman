@@ -20,7 +20,7 @@ class CountParson:
         
         if  len(self.first_position_list) == 0:
             self.first_position_list = copy.copy(_parson_dict)
-        print(type(self.first_position_list))   
+        print(self.first_position_list)   
         _new_keys_dict = _parson_dict.keys() - self.first_position_list.keys()
         _intersection_keys_dict = _parson_dict.keys() & self.first_position_list.keys()
         print(type(_new_keys_dict))
