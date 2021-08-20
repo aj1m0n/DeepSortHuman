@@ -56,7 +56,7 @@ class CountParson:
                 _ftemp = self.first_position_list.pop(_key)
                 _etemp = self.end_position_list.pop(_key)
             else:
-                _etemp = self.end_position_list.update(_parson_dict[_key])
+                _etemp = self.end_position_list | dict(_key = _parson_dict[_key])
         self.first_position_list = _ftemp
         self.end_position_list = _etemp
         return len(self.t_count_list), len(self.f_count_list)
