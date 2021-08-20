@@ -1,5 +1,6 @@
 import json
 import math
+import copy
 
 class CountParson:
     def __init__(self):
@@ -30,8 +31,8 @@ class CountParson:
             for _key in _new_keys_dict:
                 self.first_position_list[_key] = _parson_dict[_key]
         
-        _ftemp = self.first_position_list
-        _etemp = self.end_position_list
+        _ftemp = copy.copy(self.first_position_list)
+        _etemp = copy.copy9self.end_position_list)
         for _key in self.end_position_list.keys():
             if not _key in _parson_dict.keys():
                 _fx = int(self.first_position_list[_key][0] + (self.first_position_list[_key][2] - self.first_position_list[_key][0]) / 2)
@@ -53,8 +54,8 @@ class CountParson:
                     print(self.ids_position_dict)
                     self.create_dummy_data(_key)
                     self.ids_position_dict.clear()
-                _ftemp = _ftemp.pop(_key)
-                _etemp = _etemp.pop(_key)
+                _ftemp = copy.copy(_ftemp.pop(_key))
+                _etemp = copy.copy(_etemp.pop(_key))
             else:
                 _etemp[_key] =  _parson_dict[_key]
         self.first_position_list = _ftemp
